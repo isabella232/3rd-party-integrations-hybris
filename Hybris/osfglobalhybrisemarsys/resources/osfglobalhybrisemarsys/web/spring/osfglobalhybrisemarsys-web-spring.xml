@@ -1,0 +1,138 @@
+<!--
+ [y] hybris Platform
+
+ Copyright (c) 2000-2015 hybris AG
+ All rights reserved.
+
+ This software is the confidential and proprietary information of hybris
+ ("Confidential Information"). You shall not disclose such Confidential
+ Information and shall use it only in accordance with the terms of the
+ license agreement you entered into with hybris.
+-->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans.xsd
+           http://www.springframework.org/schema/aop
+           http://www.springframework.org/schema/aop/spring-aop.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context.xsd">
+    
+    <context:annotation-config/>
+    
+    <!-- Scan for annotation configured controllers/conponents/services -->
+	<context:component-scan base-package="com.osfglobal.hybris.emarsys" scope-resolver="de.hybris.platform.spring.IgnoreTenantScopeMetadataResolver"  />
+    <!--  AOP for forms -->
+	<aop:config proxy-target-class="true" expose-proxy="true">
+		<aop:aspect id="registrationEmarsysAspect" ref="emarsysRegisterAspect">
+			<aop:around method="advise"
+			            pointcut="execution(* com.osfglobal.hybris.emarsys.storefront.controllers.pages..*.doRegister(..))"/>
+		</aop:aspect>
+		
+		<aop:aspect id="checkoutRegistrationEmarsysAspect" ref="emarsysRegisterCheckoutAspect">
+			<aop:around method="advise"
+			            pointcut="execution(* com.osfglobal.hybris.emarsys.storefront.controllers.pages..*.doCheckoutRegister(..))"/>
+		</aop:aspect>
+
+		<aop:aspect id="checkoutFromSavedPaymentInfoAspect" ref="emarsysCheckoutFromSavedPaymentInfoAspect">
+			<aop:around method="advise"
+						pointcut="execution(* com.osfglobal.hybris.emarsys.storefront.controllers.pages.checkout.steps..SopPaymentResponseController.doHandleSopResponse(..))"/>
+		</aop:aspect>
+
+		<aop:aspect id="checkoutAddPaymentFormAspect" ref="emarsysCheckoutAddPaymentFormAspect">
+			<aop:around method="advise"       
+						pointcut="execution(* com.osfglobal.hybris.emarsys.storefront.controllers.pages.checkout.steps..PaymentMethodCheckoutStepController.add(..))"/>
+		</aop:aspect>
+		<!-- My Account -->
+		<aop:aspect id="myAccountUpdateEmailEmarsysAspect" ref="myAccountEmarsysAspect">
+			<aop:around method="adviseUpdateEmail"
+			            pointcut="execution(* com.osfglobal.hybris.emarsys.storefront.controllers.pages..AccountPageController.updateEmail(..))"/>
+		</aop:aspect>
+		<aop:aspect id="myAccountUpdateProfilelEmarsysAspect" ref="myAccountEmarsysAspect">
+			<aop:around method="adviseUpdateProfile"
+			            pointcut="execution(* com.osfglobal.hybris.emarsys.storefront.controllers.pages..AccountPageController.updateProfile(..))"/>
+		</aop:aspect>
+		<aop:aspect id="myAccountAddAddressEmarsysAspect" ref="myAccountEmarsysAspect">
+			<aop:around method="adviseAddressesChanges"
+			            pointcut="execution(* com.osfglobal.hybris.emarsys.storefront.controllers.pages..AccountPageController.addAddress(..))"/>
+		</aop:aspect>
+		<aop:aspect id="myAccountEditAddressEmarsysAspect" ref="myAccountEmarsysAspect">
+			<aop:around method="adviseAddressesChanges"
+			            pointcut="execution(* com.osfglobal.hybris.emarsys.storefront.controllers.pages..AccountPageController.editAddress(..))"/>
+		</aop:aspect>
+		<aop:aspect id="myAccountRemoveAddressEmarsysAspect" ref="myAccountEmarsysAspect">
+			<aop:around method="adviseRemoveaddress"
+			            pointcut="execution(* com.osfglobal.hybris.emarsys.storefront.controllers.pages..AccountPageController.removeAddress(..))"/>
+		</aop:aspect>
+		
+		<aop:aspect id="myAccountSetDefaultAddressEmarsysAspect" ref="myAccountEmarsysAspect">
+			<aop:around method="adviseSetDefaultAddress"
+			            pointcut="execution(* com.osfglobal.hybris.emarsys.storefront.controllers.pages..AccountPageController.setDefaultAddress(..))"/>
+		</aop:aspect>
+		
+		
+		
+	
+	</aop:config>
+	
+	<alias name="defaultEmarsysRegisterAspect" alias="emarsysRegisterAspect"/>
+	<bean name="defaultEmarsysRegisterAspect" class="com.osfglobal.hybris.emarsys.aspect.EmarsysAspect">
+		<property name="emarsysSubscriptionFacade" ref="emarsysSubscriptionFacade"/>
+		<property name="page" value="REGISTRATION"/>
+	</bean>
+	
+	<alias name="defaultEmarsysRegisterCheckoutAspect" alias="emarsysRegisterCheckoutAspect"/>
+	<bean name="defaultEmarsysRegisterCheckoutAspect" class="com.osfglobal.hybris.emarsys.aspect.EmarsysAspect">
+		<property name="emarsysSubscriptionFacade" ref="emarsysSubscriptionFacade"/>
+		<property name="page" value="CHECKOUT"/>
+	</bean>
+	
+	<bean name="emarsysCheckoutAddPaymentFormAspect" class="com.osfglobal.hybris.emarsys.aspect.EmarsysCheckoutAspect">
+		<property name="emarsysSubscriptionFacade" ref="emarsysSubscriptionFacade"/>
+		<property name="checkoutFacade" ref="checkoutFacade"/>
+		<property name="emailFieldName" value="email"/>
+		<property name="forceOptinFieldName" value="subscribeForNewsletter"/>
+	</bean>
+
+	<bean name="emarsysCheckoutFromSavedPaymentInfoAspect" class="com.osfglobal.hybris.emarsys.aspect.EmarsysCheckoutAspect">
+		<property name="emarsysSubscriptionFacade" ref="emarsysSubscriptionFacade"/>
+		<property name="checkoutFacade" ref="checkoutFacade"/>
+		<property name="emailFieldName" value="email"/>
+		<property name="forceOptinFieldName" value="subscribeForNewsletter"/>
+	</bean>
+	<!-- My Account -->
+	 
+	
+	<bean name="myAccountEmarsysAspect" class="com.osfglobal.hybris.emarsys.aspect.EmarsysAspectMyAccount">
+		<property name="emarsysSubscriptionFacade" ref="emarsysSubscriptionFacade"/>
+		<property name="customerFacade" ref="customerFacade"/>
+		<property name="userFacade" ref="userFacade"/>
+		
+		
+	</bean>
+    <!-- Security -->
+    <!-- <security:intercept-url pattern="/**" requires-channel="https" /> -->
+    
+    
+	<!-- Expose /acceleratoraddon/web/webroot/WEB-INF/messages/base.js.properties  resource bundle as javascript variables -->
+	<bean id="defaultOsfglobalhybrisemarsysJavaScriptMessageResourceAccessor" parent="abstractJavaScriptMessageResourceAccessor">
+		<property name="addOnName" value="osfglobalhybrisemarsys"/>
+	</bean>
+
+	<bean id="defaultOsfglobalhybrisemarsysBeforeViewJsPropsHandlerAdaptee" parent="abstractBeforeViewJsPropsHandlerAdaptee" class="de.hybris.platform.addonsupport.interceptors.ExportJsPropertiesBeforeViewHandler">
+		<property name="messageSource" ref="defaultOsfglobalhybrisemarsysJavaScriptMessageResourceAccessor"/>
+	</bean>
+
+	<bean id="getOsfglobalhybrisemarsysBeforeViewHandler" parent="beforeViewHandlerAdapter">
+		<property name="adaptee">
+			<ref bean="defaultOsfglobalhybrisemarsysBeforeViewJsPropsHandlerAdaptee"/>
+		</property>
+	</bean>
+	<bean id="OsfglobalhybrisemarsysBeforeViewHandlerListMergeDirective" depends-on="beforeViewHandlersList" parent="listMergeDirective">
+		<property name="add" ref="getOsfglobalhybrisemarsysBeforeViewHandler"/>
+	</bean>
+
+</beans>

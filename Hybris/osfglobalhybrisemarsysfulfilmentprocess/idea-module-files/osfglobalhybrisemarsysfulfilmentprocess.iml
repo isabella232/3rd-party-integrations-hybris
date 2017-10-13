@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="JAVA_MODULE" version="4">
+  <component name="FacetManager">
+    <facet type="Spring" name="Spring">
+      <configuration>
+        <fileset id="osfglobalhybrisemarsysfulfilmentprocessspring" name="osfglobalhybrisemarsysfulfilmentprocessspring" removed="false">
+          <dependency>acceleratorservicesspring==acceleratorservices</dependency>
+          <dependency>platformspring==platform</dependency>
+          <dependency>ticketsystemspring==ticketsystem</dependency>
+          <file>file://$MODULE_DIR$/../resources/osfglobalhybrisemarsysfulfilmentprocess-spring.xml</file>
+        </fileset>
+      </configuration>
+    </facet>
+  </component>
+  <component name="NewModuleRootManager" inherit-compiler-output="false">
+    <output url="file://$MODULE_DIR$/../eclipsebin" />
+    <output-test url="file://$MODULE_DIR$/../eclipsebin" />
+    <exclude-output />
+    <javadoc-paths>
+      <root url="" />
+    </javadoc-paths>
+    <content url="file://$MODULE_DIR$/..">
+      <excludeFolder url="file://$MODULE_DIR$/../.externalToolBuilders" />
+      <excludeFolder url="file://$MODULE_DIR$/../.settings" />
+      <excludeFolder url="file://$MODULE_DIR$/../acceleratoraddon/hmc/classes" />
+      <excludeFolder url="file://$MODULE_DIR$/../acceleratoraddon/web/addonsrc" />
+      <excludeFolder url="file://$MODULE_DIR$/../acceleratoraddon/web/commonwebsrc" />
+      <excludeFolder url="file://$MODULE_DIR$/../acceleratoraddon/web/testclasses" />
+      <excludeFolder url="file://$MODULE_DIR$/../backoffice/classes" />
+      <excludeFolder url="file://$MODULE_DIR$/../classes" />
+      <excludeFolder url="file://$MODULE_DIR$/../commonweb/addonsrc" />
+      <excludeFolder url="file://$MODULE_DIR$/../commonweb/commonwebsrc" />
+      <excludeFolder url="file://$MODULE_DIR$/../commonweb/testclasses" />
+      <excludeFolder url="file://$MODULE_DIR$/../eclipsebin" />
+      <excludeFolder url="file://$MODULE_DIR$/../hmc/classes" />
+      <excludeFolder url="file://$MODULE_DIR$/../web/addonsrc" />
+      <excludeFolder url="file://$MODULE_DIR$/../web/commonwebsrc" />
+      <excludeFolder url="file://$MODULE_DIR$/../web/testclasses" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="Common libs" level="project" />
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="file://$MODULE_DIR$/../resources" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module" module-name="ticketsystem" exported="" />
+    <orderEntry type="module" module-name="acceleratorservices" exported="" />
+    <orderEntry type="module" module-name="platform" exported="" />
+  </component>
+</module>

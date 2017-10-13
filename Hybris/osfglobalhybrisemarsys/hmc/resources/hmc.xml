@@ -1,0 +1,399 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+ [y] hybris Platform
+
+ Copyright (c) 2000-2015 hybris AG
+ All rights reserved.
+
+ This software is the confidential and proprietary information of hybris
+ ("Confidential Information"). You shall not disclose such Confidential
+ Information and shall use it only in accordance with the terms of the
+ license agreement you entered into with hybris.
+
+  
+-->
+<configuration xmlns="hybris.de/schemas/hmc/generic"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="hybris.de/schemas/hmc/generic hmc.xsd">
+
+
+	<!-- Configuration for extension osfglobalhybrisemarsys -->
+
+<!--
+	<explorertree>
+		<group name="osfglobalhybrisemarsysgroup">
+			<externalnode classname="com.osfglobal.hybris.emarsys.hmc.OsfglobalhybrisemarsysTreeLeafChip"/>		
+		</group>
+	</explorertree>
+-->
+
+
+<type name="EmarsysSettings" mode="append">
+	<organizer mode="append">
+		<editor mode="append">
+			<tab name="section.emarsys" mode="append">
+				<section name="section.emarsys.uid">
+					<listlayout>
+						<attribute name="uid" />
+					</listlayout>
+				</section>
+				<section name="section.emarsys.api">
+					<listlayout>
+						<attribute name="emarsysApiSecret" />
+						<attribute name="emarsysApiUsername" />
+						<attribute name="emarsysApiUrl" />
+					</listlayout>
+				</section>
+				<section name="section.emarsys.webdav">
+					<listlayout>
+						<attribute name="emarsysWebDavUsername" />
+						<attribute name="emarsysWebDavPassword" />
+						<attribute name="emarsysWebDavUrl" />
+					</listlayout>
+				</section>
+				
+				<section name="section.emarsys.footer.optin">
+					<listlayout>
+						<attribute name="footerOptin" />
+						<attribute name="footerOptinExternalEvent" />
+						<attribute name="footerConfirmationExternalEvent" />
+					</listlayout>
+				</section>
+				<section name="section.emarsys.myaccount.optin">
+					<listlayout>
+						<attribute name="myAccountOptin" />
+						<attribute name="myAccountOptinExternalEvent" />
+						<attribute name="myAccountConfirmationExternalEvent" />
+					</listlayout>
+				</section>
+				<section name="section.emarsys.register.optin">
+					<listlayout>
+						<attribute name="registerOptin" />
+						<attribute name="registerOptinExternalEvent" />
+						<attribute name="registerConfirmationExternalEvent" />
+					</listlayout>
+				</section>
+				<section name="section.emarsys.checkout.optin">
+					<listlayout>
+						<attribute name="checkoutOptin" />
+						<attribute name="checkoutOptinExternalEvent" />
+						<attribute name="checkoutConfirmationExternalEvent" />
+					</listlayout>
+				</section>
+				<section name="section.emarsys.events">
+					<listlayout>
+						<attribute name="orderConfirmationExternalEvent" />
+						<attribute name="shippingConfirmationExternalEvent" />
+					</listlayout>
+				</section>
+			</tab>
+		</editor>
+	</organizer>
+	<defaultreference searchattribute="uid" mode="replace">
+		<itemlayout>
+			<attribute name="uid" />
+		</itemlayout>
+	</defaultreference>
+</type>
+
+<type name="EmarsysOrderEmail" mode="append">
+	<organizer mode="append">
+		<editor mode="append">
+			<tab name="section.emarsys" mode="append">
+			    <section name="section.emarsys.uid">
+					<listlayout>
+						<attribute name="uid" />
+					</listlayout>
+				</section>
+				<section name="section.emarsys">
+					<listlayout>
+						<attribute name="mapping" />
+					</listlayout>
+				</section>
+			</tab>
+		</editor>
+	</organizer>
+	<defaultreference searchattribute="uid" mode="replace">
+		<itemlayout>
+			<attribute name="uid" />
+		</itemlayout>
+	</defaultreference>
+</type>
+
+<type name="EmarsysShippingEmail" mode="append">
+	<organizer mode="append">
+		<editor mode="append">
+			<tab name="section.emarsys" mode="append">
+			    <section name="section.emarsys.uid">
+					<listlayout>
+						<attribute name="uid" />
+					</listlayout>
+				</section>
+				<section name="section.emarsys">
+					<listlayout>
+						<attribute name="mapping" />
+					</listlayout>
+				</section>
+			</tab>
+		</editor>
+	</organizer>
+	<defaultreference searchattribute="uid" mode="replace">
+		<itemlayout>
+			<attribute name="uid" />
+		</itemlayout>
+	</defaultreference>
+</type>
+
+<type name="EmarsysInitialDBLoad" mode="append">
+	<organizer mode="append">
+		<editor mode="append">
+			<tab name="section.emarsys" mode="append">
+			    <section name="section.emarsys.uid">
+					<listlayout>
+						<attribute name="uid" />
+					</listlayout>
+				</section>
+				<section name="section.emarsys">
+					<listlayout>
+						<attribute name="optinStatus" />
+						<attribute name="optinStatusCustomerAttributeId" />
+						<attribute name="mapping" />
+					</listlayout>
+				</section>
+			</tab>
+		</editor>
+	</organizer>
+	<defaultreference searchattribute="uid" mode="replace">
+		<itemlayout>
+			<attribute name="uid" />
+		</itemlayout>
+	</defaultreference>
+</type>
+<type name="EmarsysPredict" mode="append">
+	<organizer mode="append">
+		<editor mode="append">
+			<tab name="properties" mode="append">
+			    <section name="section.emarsys.predict.js">
+					<listlayout>
+						<attribute name="uid" />
+						<attribute name="enableTrackingCode" />
+						<attribute name="merchantId" />
+						<attribute name="orderPageRecomType" />
+						<attribute name="productPageRecomType" />
+						<attribute name="homePageRecomType" />
+						<attribute name="cartPageRecomType" />
+						<attribute name="searchPageRecomType" />
+						<attribute name="categoryPageRecomType" />
+						<attribute name="containerId" />
+						<attribute name="templateId" />
+					</listlayout>
+				</section>
+				<section name="section.emarsys.predict.availability_zones">
+					<listlayout>
+						<attribute name="emarsysPredictAvailabilityZones" width="400">
+							<referencecollectioneditor add="false" create="true" editable="true" remove="true" externalcreate="false">
+								<itemeditorlayout>
+									<attribute name="name" />
+									<attribute name="language" />
+									<attribute name="currency" />
+								</itemeditorlayout>
+							</referencecollectioneditor>
+						</attribute>
+					</listlayout>
+				</section>
+				<section name="section.emarsys.predict.sftp_settings">
+					<listlayout>
+						<attribute name="sftpHost" />
+						<attribute name="sftpUsername" />
+						<attribute name="sftpPassword" />
+						<attribute name="sftpPath" />
+					</listlayout>
+				</section>
+				<section name="section.emarsys.predict.mappings_settings">
+					<listlayout>
+						<text name="section.emarsys.predict.mappings_warning"/>
+						<attribute name="emarsysPredictMappings" width="400">
+							<referencecollectioneditor add="false" create="true" editable="true" remove="true" externalcreate="false">
+								<itemeditorlayout>
+									<attribute name="hybrisField" />
+									<attribute name="emarsysPlaceholder" />
+								</itemeditorlayout>
+							</referencecollectioneditor>
+						</attribute>
+					</listlayout>
+				</section>
+				<section name="section.emarsys.predict.export_type">
+					<listlayout>
+						<attribute name="exportType" />
+					</listlayout>
+				</section>
+			</tab>
+		</editor>
+	</organizer>
+	<defaultreference searchattribute="uid" mode="replace">
+		<itemlayout>
+			<attribute name="uid" />
+		</itemlayout>
+	</defaultreference>
+</type>
+
+<type name="EmarsysSmartInsight" mode="append">
+	<organizer mode="append">
+		<editor mode="append">
+			<tab name="properties" mode="append">
+				<section name="section.emarsys.smart_insight.basic">
+					<listlayout>
+						<attribute name="uid" />
+						<attribute name="enableSmartInsight" />
+					</listlayout>
+				</section>
+				<section name="section.emarsys.smart_insight.timeframe">
+					<listlayout>
+						<attribute name="enableSmartInsightTimeframe" />
+						<attribute name="startDate" />
+						<attribute name="endDate" />
+					</listlayout>
+				</section>
+				<section name="section.emarsys.smart_insight.sftp_settings">
+					<listlayout>
+						<attribute name="sftpHost" />
+						<attribute name="sftpUsername" />
+						<attribute name="sftpPassword" />
+						<attribute name="sftpPath" />
+					</listlayout>
+				</section>
+				<section name="section.emarsys.smart_insight.mappings_settings">
+					<listlayout>
+						<text name="section.emarsys.smart_insight.mappings_warning"/>
+						<attribute name="emarsysSmartInsightMappings" width="400">
+							<referencecollectioneditor  add="false" create="true" editable="true" remove="true" externalcreate="false">
+								<itemeditorlayout>
+									<attribute name="hybrisField" />
+									<attribute name="emarsysPlaceholder" />
+								</itemeditorlayout>
+							</referencecollectioneditor>
+						</attribute>
+					</listlayout>
+				</section>
+			</tab>
+		</editor>
+	</organizer>
+	<defaultreference searchattribute="uid" mode="replace">
+		<itemlayout>
+			<attribute name="uid" />
+		</itemlayout>
+	</defaultreference>
+</type>
+
+<type name="EmarsysPredictMapping" mode="append">
+	<organizer mode="append">
+		<editor mode="append">
+			<tab name="section.emarsys" mode="append">
+				<section name="section.emarsys.predict.mappings_settings">
+					<listlayout>
+						<attribute name="hybrisField"/>
+						<attribute name="emarsysPlaceholder"/>
+					</listlayout>
+				</section>
+			</tab>
+		</editor>
+	</organizer>
+</type>
+	<type name="EmarsysSmartInsightMapping" mode="append">
+		<organizer mode="append">
+			<editor mode="append">
+				<tab name="section.emarsys" mode="append">
+					<section name="section.emarsys.smart_insight.mappings_settings">
+						<listlayout>
+							<attribute name="hybrisField"/>
+							<attribute name="emarsysPlaceholder"/>
+						</listlayout>
+					</section>
+				</tab>
+			</editor>
+		</organizer>
+	</type>
+
+
+<type name="EmarsysExternalEventsListCronJob" mode="append">
+	<organizer mode="append">
+		<editor mode="append">
+			<tab name="section.emarsys" mode="append">
+				<section name="section.emarsys">
+					<listlayout>
+					    <attribute name="baseSite" />
+					</listlayout>
+				</section>
+			</tab>
+		</editor>
+	</organizer>
+</type>
+
+<type name="EmarsysSyncUsersCronJob" mode="append">
+	<organizer mode="append">
+		<editor mode="append">
+			<tab name="section.emarsys" mode="append">
+				<section name="section.emarsys">
+					<listlayout>
+					    <attribute name="baseSite" />
+					</listlayout>
+				</section>
+			</tab>
+		</editor>
+	</organizer>
+</type>
+
+<type name="BaseSite" mode="append">
+	<organizer mode="append">
+		<editor mode="append">
+			<tab name="section.emarsys" mode="append">
+				<section name="section.emarsys">
+					<listlayout>
+						<attribute name="emarsysSettings" />
+						<attribute name="emarsysOrderEmail" />
+						<attribute name="emarsysShippingEmail" />
+						<attribute name="emarsysInitialDBLoad" />
+						<attribute name="emarsysPredict" />
+						<attribute name="emarsysSmartInsight" />
+					</listlayout>
+				</section>
+				<section name="section.emarsys.transactional.email.domain_site.url">
+					<listlayout>
+						<attribute name="emarsysDomainUrl" />
+						<attribute name="emarsysSiteUrl" />
+					</listlayout>
+				</section>
+			</tab>
+		</editor>
+	</organizer>
+</type>
+
+
+<type name="Order" mode="append">
+	<organizer mode="append">
+		<editor mode="append">
+			<tab name="positions_and_prices" id="tab_order_positions_and_prices" position="0" mode="append">
+				<section name="section.emarsys" mode="append">
+					<listlayout>
+						<attribute name="isSentEmail" />
+					</listlayout>
+				</section>
+			</tab>
+		</editor>
+	</organizer>
+</type>
+	<type name="Customer" mode="append">
+		<organizer mode="append">
+			<editor mode="append">
+				<tab name="tab.personalization" id="tab_order_tab_personalization" position="0" mode="append">
+					<section name="section.emarsys" mode="append">
+						<listlayout>
+							<attribute name="optinAttribute"/>
+						</listlayout>
+					</section>
+				</tab>
+			</editor>
+		</organizer>
+	</type>
+
+</configuration>

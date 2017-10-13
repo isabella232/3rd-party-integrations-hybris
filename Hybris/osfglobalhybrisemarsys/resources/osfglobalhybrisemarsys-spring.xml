@@ -1,0 +1,563 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ [y] hybris Platform
+
+ Copyright (c) 2000-2015 hybris AG
+ All rights reserved.
+
+ This software is the confidential and proprietary information of hybris
+ ("Confidential Information"). You shall not disclose such Confidential
+ Information and shall use it only in accordance with the terms of the
+ license agreement you entered into with hybris.
+-->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans.xsd
+           http://www.springframework.org/schema/aop
+           http://www.springframework.org/schema/aop/spring-aop.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context.xsd">
+           
+    <context:annotation-config/>
+	<context:component-scan base-package="com.osfglobal.hybris.emarsys.*"/>
+
+	<bean id="osfglobalhybrisemarsysCoreDataImportedEventListener" parent="abstractCoreDataImportedEventListener">
+		<property name="supportedChannels">
+			<list value-type="de.hybris.platform.commerceservices.enums.SiteChannel">
+				<value>B2C</value>
+				<!--
+								<value>B2B</value>
+				-->
+			</list>
+		</property>
+		<property name="addonExtensionMetadata">
+			<bean class="de.hybris.platform.addonsupport.data.AddonExtensionMetadata">
+				<property name="suffixChannel" value="false"/>
+				<property name="baseExtensionName" value="osfglobalhybrisemarsys"/>
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="osfglobalhybrisemarsysSampleDataEventListener" parent="abstractGenericAddOnSampleDataEventListener"  >
+		<property name="extensionName" value="osfglobalhybrisemarsys" />
+	</bean>
+
+	<bean id="emarsysBaseService" abstract="true" class="com.osfglobal.hybris.emarsys.services.EmarsysBaseService">
+		<property name="emarsysConfig" ref="osfglobalEmarsysConfig"/>
+		<property name="flexibleSearchService" ref="flexibleSearchService"/>
+		<property name="baseSiteService" ref="baseSiteService"/>
+	</bean>
+    <!-- Emarsys beans -->
+	<bean id="osfglobalEmarsysConfig" class="com.osfglobal.hybris.emarsys.services.EmarsysConfig"/>
+	<bean id="flexibleSearchDao" class="com.osfglobal.hybris.emarsys.dao.EmarsysAbstractFlexibleSearchDao" abstract="true">
+		<property name="flexibleSearchService" ref="flexibleSearchService"/>
+	</bean>
+	<bean id="emarsysOrderDao" class="com.osfglobal.hybris.emarsys.dao.EmarsysOrderDao" parent="flexibleSearchDao">
+		<property name="baseSiteService" ref="baseSiteService"/>
+	</bean>
+	<bean id="emarsysCustomerDao" class="com.osfglobal.hybris.emarsys.dao.EmarsysCustomerDao" parent="flexibleSearchDao"/>
+
+	<bean id="osfglobalEmarsysService" class="com.osfglobal.hybris.emarsys.services.impl.EmarsysServiceImpl">
+	    <property name="emarsysConfig" ref="osfglobalEmarsysConfig"/>
+	    <property name="emarsysCustomerDao" ref="emarsysCustomerDao"/>
+	    <property name="customerConverter" ref="customerConverter"/>
+	</bean>
+
+	<bean id="emarsysPredictService" class="com.osfglobal.hybris.emarsys.services.impl.EmarsysPredictServiceImpl" parent="emarsysBaseService">
+		<property name="sessionService" ref="sessionService"/>
+		<property name="catalogVersionService" ref="catalogVersionService"/>
+		<property name="userService" ref="userService"/>
+		<property name="cartService" ref="cartService"/>
+	</bean>
+
+	<bean id="emarsysSmartInsightService" class="com.osfglobal.hybris.emarsys.services.impl.EmarsysSmartInsightServiceImpl" parent="emarsysBaseService">
+	</bean>
+	<bean id="emarsysSftpService" class="com.osfglobal.hybris.emarsys.services.impl.EmarsysSftpServiceImpl" parent="emarsysBaseService"/>
+	<bean id="emarsysPriceService" class="com.osfglobal.hybris.emarsys.services.impl.EmarsysPriceServiceImpl" parent="emarsysBaseService">
+		<property name="commonI18NService" ref="commonI18NService"/>
+		<property name="i18NService" ref="i18NService"/>
+	</bean>
+	<bean id="emarsysI18nService" class="com.osfglobal.hybris.emarsys.services.impl.EmarsysI18nServiceImpl">
+		<property name="urlEncoderService" ref="urlEncoderService"/>
+	</bean>
+    <bean id="emarsysPredictFacade" class="com.osfglobal.hybris.emarsys.facades.impl.EmarsysPredictFacadeImpl">
+		<property name="cartFacade" ref="cartFacade"/>
+		<property name="baseSiteService" ref="baseSiteService"/>
+		<property name="userService" ref="userService"/>
+		<property name="emarsysPredictService" ref="emarsysPredictService"/>
+		
+		<property name="commandProviders">
+			<list>
+				<ref bean="emarsysViewCommandProvider"/>
+				<ref bean="emarsysCategoryCommandProvider"/>
+				<ref bean="emarsysSearchCommandProvider"/>
+				<ref bean="emarsysPurchaseCommandProvider"/>
+				<ref bean="emarsysCartCommandProvider"/>
+				<ref bean="emarsysHomePageCommandProvider"/>
+					
+			</list>
+	    </property>
+	</bean>
+
+	<bean id="emarsysSubscriptionFacade" class="com.osfglobal.hybris.emarsys.facades.impl.EmarsysSubscriptionFacadeImpl">
+		<property name="emarsysService" ref="osfglobalEmarsysService"/>
+		<property name="emarsysConfig" ref="osfglobalEmarsysConfig"/>
+		<property name="baseSiteService" ref="baseSiteService"/>
+		<property name="userFacade" ref="userFacade"/>
+		<property name="customerFacade" ref="customerFacade"/>
+	</bean>
+	
+	<bean id="emarsysAbstractTransactionalEmailsService"
+		  abstract="true" parent="emarsysBaseService">
+		<property name="customerEmailResolutionService" ref="customerEmailResolutionService"/>
+		<property name="customerToContactConverter" ref="customerToContactConverter"/>
+		<property name="emarsysTransactionalEmailsResolver" ref="emarsysTransactionalEmailsResolver"/>
+		<property name="emarsysOrderDao" ref="emarsysOrderDao"/>
+	</bean>
+
+	<bean id="emarsysOrderConfirmationTransactionalEmailsService"
+		  class="com.osfglobal.hybris.emarsys.services.EmarsysTransactionalEmailsServiceImpl" parent="emarsysAbstractTransactionalEmailsService">
+		<property name="emarsysMappingsConverter" ref="emarsysOrderConfirmationMappingsConverter"/>
+		<property name="externalEventName" value="orderConfirmationExternalEvent"/>
+	</bean>
+	<bean id="emarsysOrderShippedTransactionalEmailsService"
+		  class="com.osfglobal.hybris.emarsys.services.EmarsysTransactionalEmailsServiceImpl" parent="emarsysAbstractTransactionalEmailsService">
+		<property name="emarsysMappingsConverter" ref="emarsysSentOrderMappingsConverter"/>
+		<property name="externalEventName" value="shippingConfirmationExternalEvent"/>
+	</bean>
+
+	<bean id="orderConfirmationEventListener"
+		  class="com.osfglobal.hybris.emarsys.listeners.OrderConfirmationEventListener" parent="abstractSiteEventListener">
+		<property name="emarsysOrderTransactionalEmailsService" ref="emarsysOrderConfirmationTransactionalEmailsService"/>
+	</bean>
+
+
+	<!-- Populators and converter -->
+	<alias name="emarsysOrderEntryBasePriceRoundedPopulator" alias="orderEntryBasePriceRoundedPopulator"/>
+	<bean id="emarsysOrderEntryBasePriceRoundedPopulator" class="com.osfglobal.hybris.emarsys.converters.populators.OrderEntryBasePriceRoundedPopulator">
+		<property name="emarsysFormatterUtils" ref="emarsysFormatterUtils"/>
+	</bean>
+
+	 <bean parent="modifyPopulatorList">
+		<property name="list" ref="orderEntryConverter"/>
+		<property name="add" ref="orderEntryBasePriceRoundedPopulator"/>
+	</bean>
+
+	<bean id="emarsysSendShippedEmailJob"
+		  class="com.osfglobal.hybris.emarsys.cronjobs.EmarsysSendShippedEmailJob"
+		  parent="abstractJobPerformable">
+		<property name="baseSiteService" ref="baseSiteService"/>
+		<property name="emarsysOrderShippedTransactionalEmailsService" ref="emarsysOrderShippedTransactionalEmailsService"/>
+	</bean>
+	<bean id="emarsysSyncUsersJob"
+		  class="com.osfglobal.hybris.emarsys.EmarsysSyncUsersJob"
+		  parent="abstractJobPerformable">
+		<property name="emarsysService" ref="osfglobalEmarsysService"/>
+		<property name="customerAccountService" ref="customerAccountService"/>
+	</bean>
+	<bean id="emarsysExternalEventsListJob"
+		  class="com.osfglobal.hybris.emarsys.EmarsysExternalEventsListJob"
+		  parent="abstractJobPerformable">
+		<property name="emarsysService" ref="osfglobalEmarsysService"/>
+		<property name="modelService" ref="modelService"/>
+		<property name="typeService" ref="typeService"/>
+	</bean>
+
+	<bean id="emarsysSftpJob" class="com.osfglobal.hybris.emarsys.cronjobs.EmarsysSftpJob" abstract="true"  parent="abstractJobPerformable">
+		<property name="baseSiteService" ref="baseSiteService"/>
+		<property name="emarsysSftpService" ref="emarsysSftpService"/>
+		<property name="emarsysConfig" ref="osfglobalEmarsysConfig"/>
+	</bean>
+
+	<bean id="emarsysPredictJob" class="com.osfglobal.hybris.emarsys.cronjobs.EmarsysPredictJob"  parent="emarsysSftpJob">
+		<property name="emarsysPredictService" ref="emarsysPredictService"/>
+		<property name="emarsysPredictConverter" ref="emarsysPredictConverter"/>
+		<property name="filenamePattern" value="products_%s.csv"/>
+	</bean>
+
+	<bean id="emarsysSmartInsightJob" class="com.osfglobal.hybris.emarsys.cronjobs.EmarsysSmartInsightJob"  parent="emarsysSftpJob">
+		<property name="emarsysSmartInsightService" ref="emarsysSmartInsightService"/>
+		<property name="emarsysSmartInsightConverter" ref="emarsysSmartInsightConverter"/>
+		<property name="filenamePattern" value="sales_items_%s_%s.csv"/>
+	</bean>
+
+	<bean id="emarsysPredictSmartInsightResolver"
+		  class="com.osfglobal.hybris.emarsys.resolvers.EmarsysPredictSmartInsightResolver" parent="emarsysBaseResolver"/>
+	<bean id="emarsysTransactionalEmailsResolver"
+		  class="com.osfglobal.hybris.emarsys.resolvers.EmarsysTransactionalEmailsResolver" parent="emarsysBaseResolver"/>
+
+	<bean id="abstractEmarsysProductDynamictDtoConverter"
+		  class="com.osfglobal.hybris.emarsys.converters.AbstractEmarsysDynamicDtoPopulatingConverter" abstract="true">
+		<property name="targetClass" value="com.osfglobal.emarsys.client.beans.EmarsysDynamicDTO"/>
+		<property name="baseSiteService" ref="baseSiteService"/>
+		<property name="emarsysPredictSmartInsightResolver" ref="emarsysPredictSmartInsightResolver"/>
+	</bean>
+
+	<bean id="customerToContactConverter" class="com.osfglobal.hybris.emarsys.converters.EmarsysCustomerToContactConverter">
+		<property name="targetClass" value="com.osfglobal.emarsys.client.Contact"/>
+		<property name="customerEmailResolutionService" ref="customerEmailResolutionService"/>
+		<property name="customerNameStrategy" ref="customerNameStrategy"/>
+	</bean>
+
+	<bean id="emarsysPredictConverter"
+		  class="com.osfglobal.hybris.emarsys.converters.EmarsysDynamicDtoPopulatingConverter" parent="abstractEmarsysProductDynamictDtoConverter">
+		<property name="emarsysMappingsConverter" ref="emarsysPredictMappingsConverter"/>
+	</bean>
+	<bean id="emarsysSmartInsightConverter" class="com.osfglobal.hybris.emarsys.converters.EmarsysDynamicDtoPopulatingConverter"
+		  parent="abstractEmarsysProductDynamictDtoConverter">
+		<property name="emarsysMappingsConverter" ref="emarsysSmartInsightMappingsConverter"/>
+	</bean>
+
+	<bean id="emarsysPredictMappingsConverter"
+		  class="com.osfglobal.hybris.emarsys.converters.mappings.EmarsysPredictMappingsConverter"/>
+	<bean id="emarsysSmartInsightMappingsConverter"
+		  class="com.osfglobal.hybris.emarsys.converters.mappings.EmarsysSmartInsightMappingsConverter"/>
+	<bean id="emarsysOrderConfirmationMappingsConverter"
+		  class="com.osfglobal.hybris.emarsys.converters.mappings.EmarsysOrderConfirmationMappingsConverter"/>
+	<bean id="emarsysSentOrderMappingsConverter"
+		  class="com.osfglobal.hybris.emarsys.converters.mappings.EmarsysSentOrderMappingsConverter"/>
+
+	<bean id="emarsysAbstractBaseResolver" abstract="true">
+		<property name="emarsysFormatterUtils" ref="emarsysFormatterUtils"/>
+		<property name="baseSiteService" ref="baseSiteService"/>
+	</bean>
+
+	<bean id="emarsysBaseResolver" class="com.osfglobal.hybris.emarsys.resolvers.EmarsysBaseResolver" parent="emarsysAbstractBaseResolver">
+		<property name="resolvers">
+			<map>
+				<entry key="orderEntry" value-ref="emarsysOrderEntryResolver"/>
+				<entry key="order" value-ref="emarsysOrderResolver"/>
+				<entry key="product" value-ref="emarsysProductResolver"/>
+			</map>
+		</property>
+	</bean>
+
+	<bean id="emarsysAbstractGenericPriceResolver" abstract="true">
+		<property name="emarsysFormatterUtils" ref="emarsysFormatterUtils"/>
+		<property name="emarsysPriceService" ref="emarsysPriceService"/>
+		<property name="negateIfCancelled" value="false"/>
+		<property name="formatPrice" value="false"/>
+		<property name="convertToBaseCurrency" value="true"/>
+	</bean>
+	<!--Order resolvers-->
+	<bean id="emarsysOrderResolver" class="com.osfglobal.hybris.emarsys.resolvers.EmarsysBaseResolver" parent="emarsysAbstractBaseResolver">
+		<property name="resolvers">
+			<map>
+				<entry key="product" value-ref="emarsysProductResolver"/>
+				<entry key="totalPrice" value-ref="emarsysOrderTotalPriceResolver"/>
+				<entry key="totalPriceFormatted" value-ref="emarsysOrderTotalPriceFormattedResolver"/>
+				<entry key="totalDiscounts" value-ref="emarsysOrderTotalDiscountsResolver"/>
+				<entry key="totalDiscountsFormatted" value-ref="emarsysOrderTotalDiscountsFormattedResolver"/>
+				<entry key="totalTax" value-ref="emarsysOrderTotalTaxResolver"/>
+				<entry key="totalTaxFormatted" value-ref="emarsysOrderTotalTaxFormattedResolver"/>
+				<entry key="paymentCost" value-ref="emarsysOrderPaymentCostResolver"/>
+				<entry key="paymentCostFormatted" value-ref="emarsysOrderPaymentCostFormattedResolver"/>
+				<entry key="deliveryCost" value-ref="emarsysOrderDeliveryCostResolver"/>
+				<entry key="deliveryCostFormatted" value-ref="emarsysOrderDeliveryCostFormattedResolver"/>
+				<entry key="subtotal" value-ref="emarsysOrderSubtotalResolver"/>
+				<entry key="subtotalFormatted" value-ref="emarsysOrderSubtotalFormattedResolver"/>
+				<entry key="net" value-ref="emarsysOrderPricingResolver"/>
+				<entry key="customerEmail" value-ref="emarsysOrderCustomerEmailResolver"/>
+			</map>
+		</property>
+	</bean>
+	<bean id="emarsysOrderTotalPriceResolver" class="com.osfglobal.hybris.emarsys.resolvers.order.EmarsysOrderGenericPriceResolver" parent="emarsysAbstractGenericPriceResolver">
+		<property name="priceField" value="totalPrice"/>
+		<property name="negateIfCancelled" value="true"/>
+	</bean>
+	<bean id="emarsysOrderTotalPriceFormattedResolver" class="com.osfglobal.hybris.emarsys.resolvers.order.EmarsysOrderGenericPriceResolver" parent="emarsysAbstractGenericPriceResolver">
+		<property name="priceField" value="totalPrice"/>
+		<property name="formatPrice" value="true"/>
+		<property name="convertToBaseCurrency" value="false"/>
+	</bean>
+	<bean id="emarsysOrderTotalDiscountsResolver" class="com.osfglobal.hybris.emarsys.resolvers.order.EmarsysOrderGenericPriceResolver" parent="emarsysAbstractGenericPriceResolver">
+		<property name="priceField" value="totalDiscounts"/>
+		<property name="negateIfCancelled" value="true"/>
+	</bean>
+	<bean id="emarsysOrderTotalDiscountsFormattedResolver" class="com.osfglobal.hybris.emarsys.resolvers.order.EmarsysOrderGenericPriceResolver" parent="emarsysAbstractGenericPriceResolver">
+		<property name="priceField" value="totalDiscounts"/>
+		<property name="formatPrice" value="true"/>
+		<property name="convertToBaseCurrency" value="false"/>
+	</bean>
+	<bean id="emarsysOrderTotalTaxResolver" class="com.osfglobal.hybris.emarsys.resolvers.order.EmarsysOrderGenericPriceResolver" parent="emarsysAbstractGenericPriceResolver">
+		<property name="priceField" value="totalTax"/>
+	</bean>
+	<bean id="emarsysOrderTotalTaxFormattedResolver" class="com.osfglobal.hybris.emarsys.resolvers.order.EmarsysOrderGenericPriceResolver" parent="emarsysAbstractGenericPriceResolver">
+		<property name="priceField" value="totalTax"/>
+		<property name="formatPrice" value="true"/>
+		<property name="convertToBaseCurrency" value="false"/>
+	</bean>
+	<bean id="emarsysOrderDeliveryCostResolver" class="com.osfglobal.hybris.emarsys.resolvers.order.EmarsysOrderGenericPriceResolver" parent="emarsysAbstractGenericPriceResolver">
+		<property name="priceField" value="deliveryCost"/>
+	</bean>
+	<bean id="emarsysOrderDeliveryCostFormattedResolver" class="com.osfglobal.hybris.emarsys.resolvers.order.EmarsysOrderGenericPriceResolver" parent="emarsysAbstractGenericPriceResolver">
+		<property name="priceField" value="deliveryCost"/>
+		<property name="formatPrice" value="true"/>
+		<property name="convertToBaseCurrency" value="false"/>
+	</bean>
+
+	<bean id="emarsysOrderSubtotalResolver" class="com.osfglobal.hybris.emarsys.resolvers.order.EmarsysOrderGenericPriceResolver" parent="emarsysAbstractGenericPriceResolver">
+		<property name="priceField" value="subtotal"/>
+	</bean>
+	<bean id="emarsysOrderSubtotalFormattedResolver" class="com.osfglobal.hybris.emarsys.resolvers.order.EmarsysOrderGenericPriceResolver" parent="emarsysAbstractGenericPriceResolver">
+		<property name="priceField" value="subtotal"/>
+		<property name="formatPrice" value="true"/>
+		<property name="convertToBaseCurrency" value="false"/>
+	</bean>
+
+	<bean id="emarsysOrderPaymentCostResolver" class="com.osfglobal.hybris.emarsys.resolvers.order.EmarsysOrderGenericPriceResolver" parent="emarsysAbstractGenericPriceResolver">
+		<property name="priceField" value="paymentCost"/>
+	</bean>
+	<bean id="emarsysOrderPaymentCostFormattedResolver" class="com.osfglobal.hybris.emarsys.resolvers.order.EmarsysOrderGenericPriceResolver" parent="emarsysAbstractGenericPriceResolver">
+		<property name="priceField" value="paymentCost"/>
+		<property name="formatPrice" value="true"/>
+		<property name="convertToBaseCurrency" value="false"/>
+	</bean>
+
+	<bean id="emarsysOrderPricingResolver" class="com.osfglobal.hybris.emarsys.resolvers.order.EmarsysOrderPricingResolver">
+		<property name="hmcMessageSource" ref="hmcMessageSource"/>
+		<property name="i18nService" ref="i18nService"/>
+	</bean>
+	<bean id="emarsysOrderCustomerEmailResolver" class="com.osfglobal.hybris.emarsys.resolvers.order.EmarsysOrderCustomerEmailResolver">
+		<property name="customerEmailResolutionService" ref="customerEmailResolutionService"/>
+	</bean>
+	<!--end Order resolvers-->
+	<!--OrderEntry resolvers-->
+	<bean id="emarsysOrderEntryResolver" class="com.osfglobal.hybris.emarsys.resolvers.EmarsysBaseResolver" parent="emarsysAbstractBaseResolver">
+		<property name="resolvers">
+			<map>
+				<entry key="product" value-ref="emarsysProductResolver"/>
+				<entry key="order" value-ref="emarsysOrderResolver"/>
+				<entry key="totalPrice" value-ref="emarsysOrderEntryTotalPriceResolver"/>
+				<entry key="taxes" value-ref="emarsysOrderEntryTaxesResolver"/>
+				<entry key="taxesFormatted" value-ref="emarsysOrderEntryTaxesFormattedResolver"/>
+				<entry key="discounts" value-ref="emarsysOrderEntryDiscountsResolver"/>
+				<entry key="discountsFormatted" value-ref="emarsysOrderEntryDiscountsFormattedResolver"/>
+				<entry key="totalPriceFormatted" value-ref="emarsysOrderEntryTotalPriceFormattedResolver"/>
+				<entry key="basePrice" value-ref="emarsysOrderEntryBasePriceResolver"/>
+				<entry key="basePriceFormatted" value-ref="emarsysOrderEntryBasePriceFormattedResolver"/>
+			</map>
+		</property>
+	</bean>
+	<bean id="emarsysOrderEntryTaxesResolver" class="com.osfglobal.hybris.emarsys.resolvers.orderEntry.EmarsysOrderEntryTaxesAndDiscountsResolver" parent="emarsysAbstractGenericPriceResolver">
+		<property name="priceField" value="taxValues"/>
+	</bean>
+	<bean id="emarsysOrderEntryTaxesFormattedResolver" class="com.osfglobal.hybris.emarsys.resolvers.orderEntry.EmarsysOrderEntryTaxesAndDiscountsResolver" parent="emarsysAbstractGenericPriceResolver">
+		<property name="priceField" value="taxValues"/>
+		<property name="convertToBaseCurrency" value="false"/>
+		<property name="formatPrice" value="true"/>
+	</bean>
+	<bean id="emarsysOrderEntryDiscountsResolver" class="com.osfglobal.hybris.emarsys.resolvers.orderEntry.EmarsysOrderEntryTaxesAndDiscountsResolver" parent="emarsysAbstractGenericPriceResolver">
+		<property name="priceField" value="discountValues"/>
+	</bean>
+	<bean id="emarsysOrderEntryDiscountsFormattedResolver" class="com.osfglobal.hybris.emarsys.resolvers.orderEntry.EmarsysOrderEntryTaxesAndDiscountsResolver" parent="emarsysAbstractGenericPriceResolver">
+		<property name="priceField" value="discountValues"/>
+		<property name="convertToBaseCurrency" value="false"/>
+		<property name="formatPrice" value="true"/>
+	</bean>
+	<bean id="emarsysOrderEntryTotalPriceResolver" class="com.osfglobal.hybris.emarsys.resolvers.orderEntry.EmarsysOrderEntryGenericPriceResolver" parent="emarsysAbstractGenericPriceResolver">
+		<property name="priceField" value="totalPrice"/>
+		<property name="negateIfCancelled" value="true"/>
+	</bean>
+	<bean id="emarsysOrderEntryTotalPriceFormattedResolver" class="com.osfglobal.hybris.emarsys.resolvers.orderEntry.EmarsysOrderEntryGenericPriceResolver" parent="emarsysAbstractGenericPriceResolver">
+		<property name="priceField" value="totalPrice"/>
+		<property name="negateIfCancelled" value="true"/>
+		<property name="formatPrice" value="true"/>
+		<property name="convertToBaseCurrency" value="false"/>
+	</bean>
+	<bean id="emarsysOrderEntryBasePriceResolver" class="com.osfglobal.hybris.emarsys.resolvers.orderEntry.EmarsysOrderEntryGenericPriceResolver" parent="emarsysAbstractGenericPriceResolver">
+		<property name="priceField" value="basePrice"/>
+	</bean>
+	<bean id="emarsysOrderEntryBasePriceFormattedResolver" class="com.osfglobal.hybris.emarsys.resolvers.orderEntry.EmarsysOrderEntryGenericPriceResolver" parent="emarsysAbstractGenericPriceResolver">
+		<property name="priceField" value="basePrice"/>
+		<property name="formatPrice" value="true"/>
+		<property name="convertToBaseCurrency" value="false"/>
+	</bean>
+	<!--end OrderEntry resolvers-->
+	<!-- Product resolvers-->
+	<bean id="emarsysProductResolver" class="com.osfglobal.hybris.emarsys.resolvers.EmarsysBaseResolver" parent="emarsysAbstractBaseResolver">
+		<property name="resolvers">
+			<map>
+				<entry key="url" value-ref="emarsysProductUrlResolver"/>
+				<entry key="name" value-ref="emarsysProductNameResolver"/>
+				<entry key="imageUrl" value-ref="emarsysProductImageUrlResolver"/>
+				<entry key="price" value-ref="emarsysProductPriceResolver"/>
+				<entry key="available" value-ref="emarsysProductAvailabilityResolver"/>
+				<entry key="category" value-ref="emarsysProductCategoryResolver"/>
+				<entry key="description" value-ref="emarsysProductDescriptionResolver"/>
+			</map>
+		</property>
+	</bean>
+	<bean id="emarsysProductUrlResolver" class="com.osfglobal.hybris.emarsys.resolvers.product.EmarsysProductUrlResolver">
+		<property name="productModelUrlResolver" ref="productModelUrlResolver"/>
+		<property name="siteBaseUrlResolutionService" ref="siteBaseUrlResolutionService"/>
+		<property name="baseSiteService" ref="baseSiteService"/>
+		<property name="emarsysI18nService" ref="emarsysI18nService"/>
+	</bean>
+	<bean id="emarsysProductNameResolver" class="com.osfglobal.hybris.emarsys.resolvers.product.EmarsysProductNameResolver"/>
+	<bean id="emarsysProductDescriptionResolver" class="com.osfglobal.hybris.emarsys.resolvers.product.EmarsysProductDescriptionResolver">
+		<property name="stripTags" value="true"/>
+	</bean>
+
+	<bean id="emarsysProductImageUrlResolver" class="com.osfglobal.hybris.emarsys.resolvers.product.EmarsysProductImageUrlResolver">
+		<property name="siteBaseUrlResolutionService" ref="siteBaseUrlResolutionService"/>
+		<property name="baseSiteService" ref="baseSiteService"/>
+	</bean>
+
+	<bean id="emarsysAbstractProductPriceResolver" abstract="true">
+		<property name="emarsysFormatterUtils" ref="emarsysFormatterUtils"/>
+		<property name="emarsysPriceService" ref="emarsysPriceService"/>
+		<property name="baseStoreService" ref="baseStoreService"/>
+		<property name="commerceStockService" ref="commerceStockService"/>
+		<property name="formatPrice" value="false"/>
+	</bean>
+	<bean id="emarsysProductPriceResolver" class="com.osfglobal.hybris.emarsys.resolvers.product.EmarsysProductPriceResolver"
+		  parent="emarsysAbstractProductPriceResolver">
+	</bean>
+
+	<bean id="emarsysProductPriceFormattedResolver" class="com.osfglobal.hybris.emarsys.resolvers.product.EmarsysProductPriceResolver"
+		  parent="emarsysAbstractProductPriceResolver">
+		<property name="formatPrice" value="true"/>
+	</bean>
+
+	<bean id="emarsysProductAvailabilityResolver" class="com.osfglobal.hybris.emarsys.resolvers.product.EmarsysProductAvailabilityResolver">
+		<property name="commerceStockService" ref="commerceStockService"/>
+		<property name="baseStoreService" ref="baseStoreService"/>
+	</bean>
+
+	<bean id="emarsysProductCategoryResolver" class="com.osfglobal.hybris.emarsys.resolvers.product.EmarsysProductCategoryResolver" parent="productModelUrlResolver">
+		<property name="delimiter" value=">"/>
+	</bean>
+	<!--end Product resolvers-->
+	<alias name="defaltEmarsysCategoryPathResolver" alias="emarsysCategoryPathResolver"/>
+	<bean id="defaltEmarsysCategoryPathResolver"
+			class="com.osfglobal.hybris.emarsys.resolvers.EmarsysCategoryResolver">
+		<property name="threadContextService" ref="threadContextService"/>
+		<property name="commerceCategoryService" ref="commerceCategoryService"/>
+		<property name="baseSiteService" ref="baseSiteService"/>
+		<property name="pattern" value="{category-path}"/>
+	</bean>
+
+	<!-- Prdict widget Commands providers -->
+
+	 <bean id="emarsysViewCommandProvider" class="com.osfglobal.hybris.emarsys.recommendations.commands.impl.ViewCommandProvider" >
+		<property name="patterns">
+			<list>
+			 <value>/**/p/{productCode:.*}</value>
+			</list>
+		</property>
+		<property name="heroParameter" value="productCode"/>
+		<property name="commandName" value="view"/>
+		<property name="baseSiteService" ref="baseSiteService"/>
+		<property name="commonI18NService" ref="commonI18NService"/>
+		<property name="emarsysPredictService" ref="emarsysPredictService"/>
+
+	</bean>
+
+	<bean id="emarsysCategoryCommandProvider" class="com.osfglobal.hybris.emarsys.recommendations.commands.impl.CategoryCommandProvider" >
+		<property name="patterns">
+			<list>
+			 <value>/**/c/{categoryCode}?sort**</value>
+			 <value>/**/c/{categoryCode}?q**</value>
+			 <value>/**/c/{categoryCode:.*}</value>
+			
+			</list>
+		</property>
+		<property name="heroParameter" value="categoryCode"/>
+		<property name="commandName" value="category"/>
+		<property name="emarsysCategoryResolver" ref="emarsysCategoryPathResolver"/>
+		<property name="categoryService" ref="categoryService"/>
+		<property name="baseSiteService" ref="baseSiteService"/>
+	</bean>
+
+	<bean id="emarsysSearchCommandProvider" class="com.osfglobal.hybris.emarsys.recommendations.commands.impl.SearchCommandProvider" >
+		<property name="patterns">
+			<list>
+			 <value>/**/search*?**text={searchText}</value>
+			 <value>/ **/search/?text={searchText}**</value>
+			 <value>/**/search?q={searchText}:**</value>
+			</list>
+		</property>
+		<property name="heroParameter" value="searchText"/>
+		<property name="commandName" value="searchTerm"/>
+		<property name="baseSiteService" ref="baseSiteService"/>
+	</bean>
+
+	<bean id="emarsysPurchaseCommandProvider" class="com.osfglobal.hybris.emarsys.recommendations.commands.impl.PurchaseCommandProvider" >
+		<property name="patterns">
+			<list>
+			 <value>/**/checkout/orderConfirmation/{orderCode:.*}</value>
+			</list>
+		</property>
+		<property name="heroParameter" value="orderCode"/>
+		<property name="commandName" value="purchase"/>
+		<property name="orderFacade" ref="orderFacade"/>
+		<property name="baseSiteService" ref="baseSiteService"/>
+	</bean>
+	
+	<bean id="emarsysCartCommandProvider" class="com.osfglobal.hybris.emarsys.recommendations.commands.impl.CartCommandProvider" >
+		<property name="patterns">
+			<list>
+			 <value>/**/cart</value>
+			</list>
+		</property>
+		<property name="commandName" value="cart"/>
+		<property name="baseSiteService" ref="baseSiteService"/>
+	</bean>
+	
+	<bean id="emarsysHomePageCommandProvider" class="com.osfglobal.hybris.emarsys.recommendations.commands.impl.HomeCommandProvider" >
+		<property name="patterns">
+			<list>
+			<value>/</value>
+			<value>/{catalogId}/{lang}/</value>
+			 <value>/{contextPath}/</value>
+			 <value>/{contextPath}/{catalogId}/{lang}/</value>
+			</list>
+		</property>
+		<property name="commandName" value="cart"/>
+		<property name="baseSiteService" ref="baseSiteService"/>
+	</bean>
+
+	<bean id="emarsysSmartInsightConfigValidateInterceptorMapping" scope="tenant"
+		  class="de.hybris.platform.servicelayer.interceptor.impl.InterceptorMapping">
+		<property name="interceptor">
+			<bean class="com.osfglobal.hybris.emarsys.validators.EmarsysSmartInsightConfigValidateInterceptor"/>
+		</property>
+		<property name="typeCode" value="EmarsysSmartInsight"/>
+	</bean>
+
+	<bean id="emarsysEmarsysSettingsMapping" scope="tenant"
+		  class="de.hybris.platform.servicelayer.interceptor.impl.InterceptorMapping">
+		<property name="interceptor">
+			<bean class="com.osfglobal.hybris.emarsys.validators.EmarsysSettingsValidateInterceptor">
+				<property name="requiredString" value="hybris"/>
+			</bean>
+		</property>
+		<property name="typeCode" value="EmarsysSettings"/>
+	</bean>
+
+
+	<bean id="emarsysFormatterUtils" class="com.osfglobal.hybris.emarsys.utils.EmarsysFormatterUtils">
+		<property name="hmcMessageSource" ref="hmcMessageSource"/>
+		<property name="i18NService" ref="i18NService"/>
+	</bean>
+
+	<bean id="hmcMessageSource"
+		  class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+		<property name="basenames">
+			<list>
+				<value>classpath:/hmc/locales</value>
+			</list>
+		</property>
+		<property name="fileEncodings" value="UTF-8" />
+		<property name="defaultEncoding" value="UTF-8" />
+		<property name="cacheSeconds" value="60" />
+		<property name="useCodeAsDefaultMessage" value="true" />
+	</bean>
+
+	<bean id="emarsysSystemSetup" class="com.osfglobal.hybris.emarsys.setup.EmarsysSystemSetup" parent="abstractCoreSystemSetup"/>
+</beans>

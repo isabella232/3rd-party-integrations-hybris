@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+ [y] hybris Platform
+
+ Copyright (c) 2000-2015 hybris AG
+ All rights reserved.
+
+ This software is the confidential and proprietary information of hybris
+ ("Confidential Information"). You shall not disclose such Confidential
+ Information and shall use it only in accordance with the terms of the
+ license agreement you entered into with hybris.
+-->
+
+<!--
+	ATTENTION: This is just an example file. You have to edit it according to your needs.
+-->
+
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="beans.xsd">
+
+	<enum class="com.osfglobal.hybris.emarsys.data.WidgetLogic">
+		<value>PERSONAL</value>
+		<value>TOPICAL</value>
+		<value>RELATED</value>
+		<value>ALSO_BOUGH</value>
+		<value>CART</value>
+		<value>RELATED</value>
+		
+	</enum>
+	
+	<bean class="com.osfglobal.hybris.emarsys.data.PredictWidgetData">
+		<property name="codeTrackingEnabled" type="Boolean"/>
+		<property name="merchantId" type="String"/>
+		<property name="email" type="String"/>
+		<property name="cart" type="de.hybris.platform.commercefacades.order.data.CartData"/>
+		<property name="command" type="com.osfglobal.hybris.emarsys.data.CommandData"/>
+	</bean>
+	
+	<bean class="com.osfglobal.hybris.emarsys.data.CommandData">
+		<property name="codeTrackingEnabled" type="Boolean"/>
+		<property name="name" type="String"/>
+		<property name="paramString" type="String"/>
+		<property name="logic" type="String"/>
+		<property name="logicParameters" type="String"/>
+		<property name="containerId" type="String"/>
+		<property name="availabilityZone" type="String"/>
+		<property name="template" type="String"/>
+	</bean>
+	
+	<bean class="de.hybris.platform.commercefacades.order.data.OrderEntryData">
+		<property name="roundedBasePrice" type="String"/>
+	</bean>
+	
+	
+	
+
+</beans>

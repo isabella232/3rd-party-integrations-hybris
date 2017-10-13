@@ -1,0 +1,283 @@
+$version=Staged
+$contentCatalog=electronicsContentCatalog
+$contentCatalogName=Electronics Content Catalog
+$contentCV=catalogVersion(CatalogVersion.catalog(Catalog.id[default=$contentCatalog]),CatalogVersion.version[default=$version])[default=$contentCatalog:$version]
+$productCatalog=electronicsProductCatalog
+$productCatalogName=Electronics Product Catalog
+$productCV=catalogVersion(catalog(id[default=$productCatalog]),version[default=$version])[unique=true,default=$productCatalog:$version]
+$picture=media(code, $contentCV);
+$image=image(code, $contentCV);
+$media=media(code, $contentCV);
+$page=page(uid, $contentCV);
+$contentPage=contentPage(uid, $contentCV);
+$product=product(code, $productCV)
+$category=category(code, $productCV)
+$siteResource=jar:de.hybris.platform.electronicsstore.constants.ElectronicsstoreConstants&/electronicsstore/import/sampledata/contentCatalogs/$contentCatalog
+$productResource=jar:de.hybris.platform.electronicsstore.constants.ElectronicsstoreConstants&/electronicsstore/import/sampledata/productCatalogs/$productCatalog
+$jarResourceCms=jar:de.hybris.platform.electronicsstore.constants.ElectronicsstoreConstants&/electronicsstore/import/sampledata/cockpits/cmscockpit
+
+# CMS Link Components
+INSERT_UPDATE CMSLinkComponent;$contentCV[unique=true];uid[unique=true];linkName[language=en];url;&linkRef;&componentRef;target(code)[default='sameWindow'];$category;$product;
+;;OsfglobalEmailSignUpLink;"Email Sign Up";"/emailsignup";OsfglobalEmailSignUpLink;OsfglobalEmailSignUpLink;newWindow;;;
+INSERT_UPDATE CMSLinkComponent;$contentCV[unique=true];uid[unique=true];url;&linkRef;&componentRef;target(code)[default='sameWindow'];$category;$product;
+;;AboutHybrisLink;"http://www.hybris.com";AboutHybrisLink;AboutHybrisLink;newWindow;;;
+;;AccountProfileLink;/my-account/profile;AccountProfileLink;AccountProfileLink;;;;
+;;AccountAddressBookLink;/my-account/address-book;AccountAddressBookLink;AccountAddressBookLink;;;;
+;;AccountPaymentDetailsLink;/my-account/payment-details;AccountPaymentDetailsLink;AccountPaymentDetailsLink;;;;
+;;AccountOrderHistoryLink;/my-account/orders;AccountOrderHistoryLink;AccountOrderHistoryLink;;;;
+
+# CMS Navigation Nodes
+UPDATE CMSNavigationNode;uid[unique=true];$contentCV[unique=true];parent(uid, $contentCV);links(&linkRef);&nodeRef
+;HybrisNavNode;;ElectronicsNavNode;AboutHybrisLink, OsfglobalEmailSignUpLink;HybrisNavNode
+;AccountLeftNavNode;;SiteRootNode;AccountProfileLink, AccountAddressBookLink, AccountPaymentDetailsLink, AccountOrderHistoryLink;AccountLeftNavNode
+
+# CMS Page
+INSERT_UPDATE ContentPage;$contentCV[unique=true];uid[unique=true];name;title[language=en];masterTemplate(uid,$contentCV);label;defaultPage[default='false'];approvalStatus(code)[default='approved'];homepage[default='false']
+;;osfGlobalSignup;Osfglobal Signup;Osfglobal Sign Up;ContentPage1Template;osfGlobalSignup
+
+
+## Emarsys Types ##
+
+# EmarsysSettings
+INSERT_UPDATE EmarsysSettings;uid[unique=true];emarsysApiSecret;emarsysApiUsername;emarsysApiUrl;emarsysWebDavUsername;emarsysWebDavPassword;emarsysWebDavUrl;footerOptin(code);registerOptin(code);myAccountOptin(code);checkoutOptin(code)
+;emarsysSettings;K0JH67ruMUYskCSryVwP;OSF001;https://trunk-int.s.emarsys.com/api/v2;marko;0ecf6717a1;https://trunk-int.s.emarsys.com/storage/OSF/;single;single;single;single
+
+# EmarsysCustomerFieldEnum
+INSERT_UPDATE EmarsysCustomerFieldEnum;code[unique=true];name[lang=en]
+;order.code;Order Number
+;order.date;Order Date
+;order.deliveryMode.name;Delivery Method
+;order.paymentMode.name;Payment Method
+;order.deliveryCostFormatted;Delivery Costs
+;order.deliveryStatus.code;Delivery Status
+;order.subtotalFormatted;Net Sum
+;order.totalTaxFormatted;Taxes
+;order.totalPriceFormatted;Total Price
+;order.totalDiscountsFormatted;Total Discounts
+;order.customerEmail;Customer Email
+;order.paymentAddress.line1;Billing Address 1
+;order.paymentAddress.line2;Billing Address 2
+;order.paymentAddress.streetname;Billing Street
+;order.paymentAddress.postalcode;Billing Zip
+;order.paymentAddress.town;Billing Town
+;order.paymentAddress.country.name;Billing Country
+;order.paymentAddress.phone1;Billing Phone
+;order.paymentAddress.email;Billing Email
+;order.deliveryAddress.line1;Delivery Address 1
+;order.deliveryAddress.line2;Delivery Address 1
+;order.deliveryAddress.streetname;Delivery Street
+;order.deliveryAddress.postalcode;Delivery Postal Code
+;order.deliveryAddress.town;Delivery Town
+;order.deliveryAddress.country.name;Delivery Country
+;order.deliveryAddress.phone1;Delivery Phone
+;order.deliveryAddress.email;Delivery Email
+;orderEntry.product.name;Product Name
+;orderEntry.quantity;Product Quantity
+;orderEntry.order.currency.isocode;Product Currency
+;orderEntry.basePriceFormatted;Product Item Price
+;orderEntry.totalPriceFormatted;Product Total Item Price
+;orderEntry.product.url;Product Url
+;orderEntry.product.imageUrl;Product Image Url
+;orderEntry.taxesFormatted;Product Taxes
+;orderEntry.discountsFormatted;Product Discounts
+
+# EmarsysPlaceholderEnum
+INSERT_UPDATE EmarsysPlaceholderEnum;code[unique=true]
+;order_number
+;order_date
+;delivery_method
+;payment_method
+;shipping_costs
+;shipping_status
+;net_sum
+;taxes
+;total_sum
+;order_rebate
+;customer_email
+;b_address_1
+;b_address_2
+;b_address_street
+;b_address_zip
+;b_address_city
+;b_address_country
+;b_address_phone
+;b_address_email
+;s_address_1
+;s_address_2
+;s_address_street
+;s_address_zip
+;s_address_city
+;s_address_country
+;s_address_phone
+;s_address_email
+;product_name
+;product_quantity
+;product_price_currency
+;product_item_price
+;product_total_price
+;product_url
+;product_image
+;product_tax
+;product_rebate
+
+# EmarsysInitialDBLoadCustomerFieldEnum
+INSERT_UPDATE EmarsysInitialDBLoadCustomerFieldEnum;code[unique=true];name[lang=en]
+;firstname;Hybris First Name
+;lastname;Hybris Last Name
+;email;Hybris E-mail
+;address;Hybris Address
+;postalcode;Hybris Postal Code
+;town;Hybris Town
+;district;Hybris District
+;phone1;Hybris Phone Number
+;cellphone;Hybris Cell Phone Number
+;fax;Hybris Fax
+;company;Hybris Company
+;dateOfBirth;Hybris Date of birth
+;title.code;Hybris Title
+;country.name;Hybris Country
+;optin;Hybris Opt-In
+
+# EmarsysInitialDBLoadPlaceholderEnum
+INSERT_UPDATE EmarsysInitialDBLoadPlaceholderEnum;code[unique=true];name[lang=en]
+;firstName;Emarsys First Name
+;lastName;Emarsys Last Name
+;email;Emarsys E-mail
+;address;Emarsys Address
+;zipcode;Emarsys Zip Code
+;city;Emarsys City
+;state;Emarsys State
+;phone;Emarsys Phone Number
+;mobile;Emarsys Mobile Number
+;fax;Emarsys Fax
+;company;Emarsys Company Name
+;dateOfBirth;Emarsys Date of Birth
+;title;Emarsys Title, Salutation and Gender
+;country;Emarsys Country
+;optIn;Emarsys Opt-In
+
+
+# EmarsysOrderEmail
+INSERT_UPDATE EmarsysOrderEmail;uid[unique=true];mapping(key(code),value(code))[map-delimiter=|]
+;emarsysOrderEmail;order.code->order_number|order.date->order_date|order.deliveryMode.name->delivery_method|order.paymentMode.name->payment_method|order.deliveryCostFormatted->shipping_costs|order.deliveryStatus.code->shipping_status|order.subtotalFormatted->net_sum|order.totalTaxFormatted->taxes|order.totalPriceFormatted->total_sum|order.totalDiscountsFormatted->order_rebate|order.customerEmail->customer_email|order.paymentAddress.line1->b_address_1|order.paymentAddress.line2->b_address_2|order.paymentAddress.streetname->b_address_street|order.paymentAddress.postalcode->b_address_zip|order.paymentAddress.town->b_address_city|order.paymentAddress.country.name->b_address_country|order.paymentAddress.phone1->b_address_phone|order.paymentAddress.email->b_address_email|order.deliveryAddress.line1->s_address_1|order.deliveryAddress.line2->s_address_2|order.deliveryAddress.streetname->s_address_street|order.deliveryAddress.postalcode->s_address_zip|order.deliveryAddress.town->s_address_city|order.deliveryAddress.country.name->s_address_country|order.deliveryAddress.phone1->s_address_phone|order.deliveryAddress.email->s_address_email|orderEntry.product.name->product_name|orderEntry.quantity->product_quantity|orderEntry.order.currency.isocode->product_price_currency|orderEntry.basePriceFormatted->product_item_price|orderEntry.totalPriceFormatted->product_total_price|orderEntry.product.url->product_url|orderEntry.product.imageUrl->product_image|orderEntry.taxesFormatted->product_tax|orderEntry.discountsFormatted->product_rebate
+
+# EmarsysShippingEmail
+INSERT_UPDATE EmarsysShippingEmail;uid[unique=true];mapping(key(code),value(code))[map-delimiter=|]
+;emarsysShippingEmail;order.code->order_number|order.date->order_date|order.deliveryMode.name->delivery_method|order.paymentMode.name->payment_method||order.deliveryCostFormatted->shipping_costs|order.deliveryStatus.code->shipping_status|order.subtotalFormatted->net_sum|order.totalTaxFormatted->taxes|order.totalPriceFormatted->total_sum|order.totalDiscountsFormatted->order_rebate|order.customerEmail->customer_email|order.paymentAddress.line1->b_address_1|order.paymentAddress.line2->b_address_2|order.paymentAddress.streetname->b_address_street|order.paymentAddress.postalcode->b_address_zip|order.paymentAddress.town->b_address_city|order.paymentAddress.country.name->b_address_country|order.paymentAddress.phone1->b_address_phone|order.paymentAddress.email->b_address_email|order.deliveryAddress.line1->s_address_1|order.deliveryAddress.line2->s_address_2|order.deliveryAddress.streetname->s_address_street|order.deliveryAddress.postalcode->s_address_zip|order.deliveryAddress.town->s_address_city|order.deliveryAddress.country.name->s_address_country|order.deliveryAddress.phone1->s_address_phone|order.deliveryAddress.email->s_address_email|orderEntry.product.name->product_name|orderEntry.quantity->product_quantity|orderEntry.order.currency.isocode->product_price_currency|orderEntry.basePriceFormatted->product_item_price|orderEntry.totalPriceFormatted->product_total_price|orderEntry.product.url->product_url|orderEntry.product.imageUrl->product_image|orderEntry.taxesFormatted->product_tax|orderEntry.discountsFormatted->product_rebate
+
+# EmarsysOptinStatusEnum
+INSERT_UPDATE EmarsysOptinStatusEnum;code[unique=true]
+;0 (All users empty) (default)
+;1 (All users true)
+;2 (Depending on attribute)
+
+# EmarsysInitialDBLoad
+INSERT_UPDATE EmarsysInitialDBLoad;uid[unique=true];optinStatus(code);mapping(key(code),value(code))[map-delimiter=|]
+;emarsysInitialDBLoad;0 (All users empty) (default);firstname->firstName|lastname->lastName|email->email|address->address|postalcode->zipcode|town->city|district->state|phone1->phone|cellphone->mobile|fax->fax|company->company|dateOfBirth->dateOfBirth|title.code->title|country.name->country|optin->optIn
+
+# BaseSite
+INSERT_UPDATE BaseSite;uid[unique=true];emarsysDomainUrl;emarsysSiteUrl;emarsysSettings(uid);emarsysOrderEmail(uid);emarsysShippingEmail(uid);emarsysInitialDBLoad(uid)
+;electronics;https://electronics.emarsyshybris.ofactory.biz:9002;https://electronics.emarsyshybris.ofactory.biz:9002/osfglobalhybrisemarsysstorefront/electronics/en;emarsysSettings;emarsysOrderEmail;emarsysShippingEmail;emarsysInitialDBLoad;
+
+# EmarsysExternalEventsListCronJob
+INSERT_UPDATE EmarsysExternalEventsListCronJob;code[unique=true];job(code);sessionLanguage(isocode)[default=en];baseSite(uid)
+;emarsysExternalEventsListCronJob;emarsysExternalEventsListJob;en;electronics
+
+# EmarsysSendShippedEmailCronJob
+INSERT_UPDATE EmarsysSendShippedEmailCronJob;code[unique=true];job(code);sessionLanguage(isocode)[default=en];baseSite(uid)
+;emarsysSendShippedEmailCronJob;emarsysSendShippedEmailJob;en;electronics
+
+# EmarsysSyncUsersCronJob
+INSERT_UPDATE EmarsysSyncUsersCronJob;code[unique=true];job(code);sessionLanguage(isocode)[default=en];baseSite(uid)
+;emarsysSyncUsersCronJob;emarsysSyncUsersJob;en;electronics
+
+# EmarsysPredictCronJob
+INSERT_UPDATE EmarsysPredictCronJob;code[unique=true];job(code);sessionLanguage(isocode)[default=en];baseSite(uid)
+;emarsysPredictCronJob;emarsysPredictJob;en;electronics
+
+# EmarsysSmartInsightCronJob
+INSERT_UPDATE EmarsysSmartInsightCronJob;code[unique=true];job(code);sessionLanguage(isocode)[default=en];baseSite(uid)
+;emarsysSmartInsightCronJob;emarsysSmartInsightJob;en;electronics
+
+# EmarsysPredict product fields
+INSERT_UPDATE EmarsysPredictHybrisProductFieldEnum;code[unique=true];
+;product.code
+;product.name
+;product.url
+;product.imageUrl
+;product.price
+;product.available
+;product.category
+;product.currency
+;product.description
+;product.unit.unitType
+;product.summary
+;product.variants
+;product.catalogVersion.version
+;product.onlineDate
+;product.offlineDate
+;product.supercategories.code
+#EmarsysPredict Java Script Recommendation|FTP|mappings|export type| settings
+INSERT_UPDATE EmarsysPredict;uid[unique=true];merchantId;enableTrackingCode;sftpHost;sftpUsername;sftpPassword;sftpPath;orderPageRecomType(code);productPageRecomType(code);homePageRecomType(code);cartPageRecomType(code);searchPageRecomType(code);categoryPageRecomType(code);containerId;
+ ;emarsysPredict;15DF1E987EDEB03A;true;ftp.emarsys-is.de;osfhybris;1GQTuJWqIp4LTjz6xHJH;Predict;PERSONAL;ALSO_BOUGHT;DISABLED;CART;DISABLED;TOPICAL;emarsys-rec;
+
+
+INSERT_UPDATE EmarsysPredictMapping;hybrisField(code)[unique=true]; emarsysPlaceholder[unique=true];emarsysPredict(uid)[default = emarsysPredict];
+ ;product.code;item;
+ ;product.name;title;
+ ;product.url;link;
+ ;product.imageUrl;image;
+ ;product.price;price;
+ ;product.available;available;
+ ;product.category;category;
+
+
+
+# EmarsysSmartInsight order entry fields
+INSERT_UPDATE EmarsysSmartInsightHybrisOrderEntryFieldEnum;code[unique=true];
+;orderEntry.order.code
+;orderEntry.order.date
+;orderEntry.order.customerEmail
+;orderEntry.order.totalPrice
+;orderEntry.order.currency.isocode
+;orderEntry.order.net
+;orderEntry.order.totalTax
+;orderEntry.order.user.name
+;orderEntry.order.paymentAddress.postalcode
+;orderEntry.order.paymentInfo.number
+;orderEntry.order.deliveryAddress.phone1
+;orderEntry.quantity
+;orderEntry.totalPrice
+;orderEntry.product.code
+;orderEntry.product.name
+;orderEntry.product.url
+;orderEntry.product.category
+
+
+INSERT_UPDATE EmarsysSmartInsightMapping;hybrisField(code)[unique=true]; emarsysPlaceholder[unique=true];emarsysSmartInsight(uid)[default = emarsysSmartInsight];
+;orderEntry.order.code;order
+;orderEntry.order.date;date
+;orderEntry.order.user.uid;customer
+;orderEntry.product.code;item;
+;orderEntry.quantity;quantity
+;orderEntry.totalPrice;c_sales_amount
+;orderEntry.product.name;c_productName
+;orderEntry.product.url;c_productUrl
+;orderEntry.product.category;c_category
+
+#EmarsysSmartInsight FTP|mappings| settings
+INSERT_UPDATE EmarsysSmartInsight;uid[unique=true];enableSmartInsight;sftpHost;sftpUsername;sftpPassword;sftpPath;
+;emarsysSmartInsight;true;ftp.emarsys-is.de;osfhybris;1GQTuJWqIp4LTjz6xHJH;SmartInsight;
+
+
+INSERT_UPDATE CMSSite;uid[unique=true];emarsysPredict(uid);urlEncodingAttributes
+                       ;electronics;emarsysPredict;storefront,language,currency
+                         
+INSERT_UPDATE EmarsysWidgetTypeEnum;code[unique=true];name[lang=en]
+            ;PERSONAL;
+			;TOPICAL;
+			;RELATED;
+			#;ALSO_BOUGHT;
+			;CART;Cart(Default)
+			;CATEGORY;
+			;DISABLED;Disable (Disable widget in this page)

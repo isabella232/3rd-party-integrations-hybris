@@ -1,0 +1,564 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+ [y] hybris Platform
+
+ Copyright (c) 2000-2015 hybris AG
+ All rights reserved.
+
+ This software is the confidential and proprietary information of hybris
+ ("Confidential Information"). You shall not disclose such Confidential
+ Information and shall use it only in accordance with the terms of the
+ license agreement you entered into with hybris.
+
+  
+-->
+
+<items 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+			xsi:noNamespaceSchemaLocation="items.xsd">
+	<enumtypes>
+		<enumtype code="EmarsysOptinEnum" autocreate="true" generate="true" dynamic="true">
+			<value code="single"/>
+			<value code="double"/>
+		</enumtype>
+		<enumtype code="EmarsysCustomerFieldEnum" autocreate="true" generate="true" dynamic="true"/>
+		<enumtype code="EmarsysPlaceholderEnum" autocreate="true" generate="true" dynamic="true"/>
+		<enumtype code="EmarsysInitialDBLoadCustomerFieldEnum" autocreate="true" generate="true" dynamic="true"/>
+		<enumtype code="EmarsysInitialDBLoadPlaceholderEnum" autocreate="true" generate="true" dynamic="true"/>
+		<enumtype code="EmarsysOptinStatusEnum" autocreate="true" generate="true" dynamic="true"/>
+		<enumtype code="EmarsysExternalEventsEnum" autocreate="true" generate="true" dynamic="true"/>
+		<!--Emarsys Predict-->
+		<enumtype code="EmarsysPredictHybrisProductFieldEnum" autocreate="true" generate="true" dynamic="true"/>
+		<!--<enumtype code="EmarsysPredictPlaceholderEnum" autocreate="true" generate="true" dynamic="true"/>-->
+		<enumtype code="EmarsysWidgetTypeEnum" autocreate="true" generate="true" dynamic="true" >
+			<value code="PERSONAL"/>
+			<value code="TOPICAL"/>
+			<value code="RELATED"/>
+			<value code="ALSO_BOUGHT"/>
+			<value code="CART"/>
+			<value code="CATEGORY"/>
+			<value code="DISABLED"/>
+		</enumtype>
+		<enumtype code="EmarsysPredictExportTypeEnum" autocreate="true" generate="true" dynamic="true">
+			<value code="MAIN"/>
+			<value code="VARIATIONS"/>
+		</enumtype>
+		<!--END Emarsys Predict-->
+		<!--Emarsys SmartInsight-->
+		<enumtype code="EmarsysSmartInsightHybrisOrderEntryFieldEnum" autocreate="true" generate="true" dynamic="true"/>
+		<!--<enumtype code="EmarsysSmartInsightPlaceholderEnum" autocreate="true" generate="true" dynamic="true"/>-->
+		<!--END Emarsys SmartInsight-->
+
+	</enumtypes>
+	
+	<maptypes>
+		<maptype code="EmarsysHybrisMap" argumenttype="EmarsysCustomerFieldEnum"
+			returntype="EmarsysPlaceholderEnum" generate="true" autocreate="true" />
+		<maptype code="EmarsysInitialDBLoadHybrisMap" argumenttype="EmarsysInitialDBLoadCustomerFieldEnum"
+			returntype="EmarsysInitialDBLoadPlaceholderEnum" generate="true" autocreate="true" />
+	</maptypes>
+
+	<relations>
+		<relation code="EmarsysPredict2EmarsysPredictMappingRel" generate="true" localized="false" autocreate="true">
+			<sourceElement qualifier="emarsysPredict" type="EmarsysPredict" cardinality="one">
+				<modifiers read="true" write="true" initial="false" optional="true"/>
+			</sourceElement>
+			<targetElement qualifier="emarsysPredictMappings" type="EmarsysPredictMapping" cardinality="many" ordered="true" collectiontype="set">
+				<modifiers read="true" write="true" initial="false" optional="true"/>
+			</targetElement>
+		</relation>
+		<relation code="EmarsysPredict2EmarsysPredictAvailabilityZoneRel" generate="true" localized="false" autocreate="true">
+			<sourceElement qualifier="emarsysPredict" type="EmarsysPredict" cardinality="one">
+				<modifiers read="true" write="true" initial="false" optional="true"/>
+			</sourceElement>
+			<targetElement qualifier="emarsysPredictAvailabilityZones" type="EmarsysPredictAvailabilityZone" cardinality="many" ordered="true" collectiontype="set">
+				<modifiers read="true" write="true" initial="false" optional="true"/>
+			</targetElement>
+		</relation>
+		<relation code="EmarsysSmartInsight2EmarsysSmartInsightMappingRel" generate="true" localized="false" autocreate="true">
+			<sourceElement qualifier="emarsysSmartInsight" type="EmarsysSmartInsight" cardinality="one">
+				<modifiers read="true" write="true" initial="false" optional="true"/>
+			</sourceElement>
+			<targetElement qualifier="emarsysSmartInsightMappings" type="emarsysSmartInsightMapping" cardinality="many" ordered="true" collectiontype="set">
+				<modifiers read="true" write="true" initial="false" optional="true"/>
+			</targetElement>
+		</relation>
+	</relations>
+
+	<itemtypes>
+	    
+        <typegroup name="OsfglobalEmarsys">
+			<!-- Custom cron jobs and setting types -->
+
+			<itemtype code="EmarsysSettings"
+			        jaloclass="com.osfglobal.hybris.emarsys.core.jalo.EmarsysSettings"
+			        autocreate="true"
+	                generate="true" 
+	                extends="GenericItem">
+				<description>Emarsys Settings</description>
+				<deployment table="EmarsysSettings" typecode="16723" />
+                <attributes>
+                    <attribute qualifier="uid" type="java.lang.String">
+						<persistence type="property"/>
+						<modifiers unique="true"/>
+					</attribute>
+					
+                    <attribute qualifier="emarsysApiSecret" type="java.lang.String">
+						<description>Emarsys API secret</description>
+						<persistence type="property"/>
+						<modifiers optional="false"/>
+					</attribute>
+					<attribute qualifier="emarsysApiUsername" type="java.lang.String">
+						<description>Emarsys API username</description>
+						<modifiers optional="false"/>
+						<persistence type="property"/>
+					</attribute>
+					<attribute qualifier="emarsysApiUrl" type="java.lang.String">
+						<description>Emarsys API URL</description>
+						<modifiers optional="false"/>
+						<persistence type="property"/>
+					</attribute>
+					
+					<attribute qualifier="emarsysWebDavUsername" type="java.lang.String">
+						<description>Emarsys WebDav username</description>
+						<modifiers optional="false"/>
+						<persistence type="property"/>
+					</attribute>
+					<attribute qualifier="emarsysWebDavPassword" type="java.lang.String">
+						<description>Emarsys WebDav password</description>
+						<modifiers optional="false"/>
+						<persistence type="property"/>
+					</attribute>
+					<attribute qualifier="emarsysWebDavUrl" type="java.lang.String">
+						<description>Emarsys WebDav url</description>
+						<modifiers optional="false"/>
+						<persistence type="property"/>
+					</attribute>
+					<!-- Subscribe Optin -->
+                    <attribute qualifier="footerOptin" type="EmarsysOptinEnum" >
+						<description>Footer Optin</description>
+						<persistence type="property" />
+					</attribute>
+					<attribute qualifier="footerOptinExternalEvent" type="EmarsysExternalEventsEnum">
+						<description>Footer external event</description>
+						<persistence type="property"/>
+					</attribute>
+					<attribute qualifier="footerConfirmationExternalEvent" type="EmarsysExternalEventsEnum">
+						<description>Footer after confirmation external event</description>
+						<persistence type="property"/>
+					</attribute>
+					<!-- My Account Optin -->
+					<attribute qualifier="myAccountOptin" type="EmarsysOptinEnum" >
+						<description>My Account Opt-in</description>
+						<persistence type="property" />
+					</attribute>
+					<attribute qualifier="myAccountOptinExternalEvent" type="EmarsysExternalEventsEnum">
+						<description>My account external event</description>
+						<persistence type="property"/>
+					</attribute>
+					<attribute qualifier="myAccountConfirmationExternalEvent" type="EmarsysExternalEventsEnum">
+						<description>My account after confirmation external event</description>
+						<persistence type="property"/>
+					</attribute>
+					<!-- Register Optin -->
+					<attribute qualifier="registerOptin" type="EmarsysOptinEnum" >
+						<description>Register Opt-in</description>
+						<persistence type="property" />
+					</attribute>
+					<attribute qualifier="registerOptinExternalEvent" type="EmarsysExternalEventsEnum">
+						<description>Register external event</description>
+						<persistence type="property"/>
+					</attribute>
+					<attribute qualifier="registerConfirmationExternalEvent" type="EmarsysExternalEventsEnum">
+						<description>Register after confirmation external event</description>
+						<persistence type="property"/>
+					</attribute>
+
+					<!-- Checkout Optin -->
+					<attribute qualifier="checkoutOptin" type="EmarsysOptinEnum" >
+						<description>Checkout Opt-in</description>
+						<persistence type="property" />
+					</attribute>
+					<attribute qualifier="checkoutOptinExternalEvent" type="EmarsysExternalEventsEnum">
+						<description>Checkout single external event</description>
+						<persistence type="property"/>
+					</attribute>
+					<attribute qualifier="checkoutConfirmationExternalEvent" type="EmarsysExternalEventsEnum">
+						<description>Checkout after confirmation external event</description>
+						<persistence type="property"/>
+					</attribute>
+					
+					<attribute qualifier="orderConfirmationExternalEvent" type="EmarsysExternalEventsEnum">
+						<description>Order Confirmation external event</description>
+						<persistence type="property"/>
+					</attribute>
+					<attribute qualifier="shippingConfirmationExternalEvent" type="EmarsysExternalEventsEnum">
+						<description>Shipping Confirmation external event</description>
+						<persistence type="property"/>
+					</attribute>
+                </attributes>
+			</itemtype>
+
+			<itemtype code="EmarsysPredictMapping"
+					  jaloclass="com.osfglobal.hybris.emarsys.core.jalo.EmarsysPredictMapping"
+					  autocreate="true"
+					  generate="true"
+					  extends="GenericItem">
+				<description>EmarsysPredictMapping</description>
+				<deployment table="emarsyspredictmapping" typecode="16777"/>
+				<attributes>
+					<attribute qualifier="hybrisField" type="EmarsysPredictHybrisProductFieldEnum">
+						<persistence type="property"/>
+					</attribute>
+					<attribute qualifier="emarsysPlaceholder" type="java.lang.String">
+						<persistence type="property"/>
+						<modifiers unique="true"/>
+					</attribute>
+				</attributes>
+			</itemtype>
+
+			<itemtype code="EmarsysSmartInsightMapping"
+					  jaloclass="com.osfglobal.hybris.emarsys.core.jalo.EmarsysSmartInsightMapping"
+					  autocreate="true"
+					  generate="true"
+					  extends="GenericItem">
+				<description>EmarsysSmartInsightMapping</description>
+				<deployment table="emarsyssimapping" typecode="16778"/>
+				<attributes>
+					<attribute qualifier="hybrisField" type="EmarsysSmartInsightHybrisOrderEntryFieldEnum">
+						<persistence type="property"/>
+					</attribute>
+					<attribute qualifier="emarsysPlaceholder" type="java.lang.String">
+						<persistence type="property"/>
+						<modifiers unique="true"/>
+					</attribute>
+				</attributes>
+			</itemtype>
+
+			<itemtype code="EmarsysPredictAvailabilityZone"
+					  jaloclass="com.osfglobal.hybris.emarsys.core.jalo.EmarsysPredictAvailabilityZone"
+					  autocreate="true"
+					  generate="true"
+					  extends="GenericItem">
+				<description>EmarsysPredictAvailabilityZone</description>
+				<deployment table="emarsysavailabilityzone" typecode="16787"/>
+				<attributes>
+					<attribute qualifier="name" type="java.lang.String">
+						<persistence type="property"/>
+						<modifiers optional="false" unique="true"/>
+					</attribute>
+					<attribute qualifier="language" type="Language">
+						<persistence type="property"/>
+						<modifiers optional="false"/>
+					</attribute>
+					<attribute qualifier="currency" type="Currency">
+						<modifiers optional="false"/>
+						<persistence type="property"/>
+				</attribute>
+				</attributes>
+			</itemtype>
+			
+			<itemtype code="EmarsysOrderEmail"
+			        jaloclass="com.osfglobal.hybris.emarsys.core.jalo.EmarsysOrderEmail"
+			        autocreate="true"
+	                generate="true" 
+	                extends="GenericItem">
+				<description>Emarsys Order Email</description>
+				<deployment table="EmarsysOrderEmail" typecode="16725" />
+				<attributes>
+				    <attribute qualifier="uid" type="java.lang.String">
+						<persistence type="property"/>
+						<modifiers unique="true"/>
+					</attribute>
+					
+				    <attribute qualifier="mapping" type="EmarsysHybrisMap" >
+						<description>mapping</description>
+						<persistence type="property" />
+					</attribute>
+                </attributes>
+			</itemtype>
+			
+			<itemtype code="EmarsysShippingEmail"
+			        jaloclass="com.osfglobal.hybris.emarsys.core.jalo.EmarsysShippingEmail"
+			        autocreate="true"
+	                generate="true" 
+	                extends="GenericItem">
+				<description>Emarsys Shipping Email</description>
+				<deployment table="EmarsysShippingEmail" typecode="16724" />
+				<attributes>
+				    <attribute qualifier="uid" type="java.lang.String">
+						<persistence type="property"/>
+						<modifiers unique="true"/>
+					</attribute>
+					
+				    <attribute qualifier="mapping" type="EmarsysHybrisMap" >
+						<description>mapping</description>
+						<persistence type="property" />
+					</attribute>
+                </attributes>
+			</itemtype>
+			
+			<itemtype code="EmarsysInitialDBLoad"
+			        jaloclass="com.osfglobal.hybris.emarsys.core.jalo.EmarsysInitialDBLoad"
+			        autocreate="true"
+	                generate="true" 
+	                extends="GenericItem">
+				<description>Emarsys Initial DB Load</description>
+				<deployment table="EmarsysDBLoad" typecode="16726" />
+				<attributes>
+				    <attribute qualifier="uid" type="java.lang.String">
+						<persistence type="property"/>
+						<modifiers unique="true"/>
+					</attribute>
+					
+					<attribute qualifier="optinStatus" type="EmarsysOptinStatusEnum">
+						<persistence type="property"/>
+					</attribute>
+					
+					<attribute qualifier="optinStatusCustomerAttributeId" type="java.lang.String">
+						<persistence type="property"/>
+					</attribute>
+
+				    <attribute qualifier="mapping" type="EmarsysInitialDBLoadHybrisMap" >
+						<description>mapping</description>
+						<persistence type="property" />
+					</attribute>
+                </attributes>
+			</itemtype>
+			<itemtype code="EmarsysPredict"
+			        jaloclass="com.osfglobal.hybris.emarsys.core.jalo.EmarsysPredict"
+			        autocreate="true"
+	                generate="true" 
+	                extends="GenericItem">
+				<description>Emarsys Predict</description>
+				<deployment table="emarsyspredict" typecode="16770" />
+				<attributes>
+				    <attribute qualifier="uid" type="java.lang.String">
+						<persistence type="property"/>
+						<modifiers unique="true"/>
+					</attribute>
+					<!--Emarsys Predict JS Settings-->
+				    <attribute qualifier="enableTrackingCode" type="java.lang.Boolean">
+						<modifiers read="true" write="true" search="true" optional="false"/>
+						<defaultvalue>Boolean.FALSE</defaultvalue>
+						<persistence type="property"/>
+					</attribute>
+					<attribute qualifier="merchantId" type="java.lang.String">
+						<persistence type="property"/>
+					</attribute>
+				    <attribute qualifier="orderPageRecomType" type="EmarsysWidgetTypeEnum" >
+						<description>	Thank You For Your Order Page RecommendationType</description>
+						<persistence type="property" />
+					</attribute>
+					<attribute qualifier="productPageRecomType" type="EmarsysWidgetTypeEnum" >
+						<description>	Product Detail Page RecommendationType</description>
+						<persistence type="property" />
+					</attribute>
+					<attribute qualifier="homePageRecomType" type="EmarsysWidgetTypeEnum" >
+						<description>	Home Page RecommendationType</description>
+						<persistence type="property" />
+					</attribute>
+					<attribute qualifier="cartPageRecomType" type="EmarsysWidgetTypeEnum" >
+						<description>	Cart Page RecommendationType</description>
+						<persistence type="property" />
+					</attribute>
+					<attribute qualifier="searchPageRecomType" type="EmarsysWidgetTypeEnum" >
+						<description>	Search Page RecommendationType</description>
+						<persistence type="property" />
+					</attribute>
+					<attribute qualifier="categoryPageRecomType" type="EmarsysWidgetTypeEnum" >
+						<description>	Category Page Page RecommendationType</description>
+						<persistence type="property" />
+					</attribute>
+					<!-- Recommendation container and layout Setting -->
+					<attribute qualifier="containerId" type="java.lang.String">
+					<description> Div id where predict recommendations are displayed</description>
+						<persistence type="property"/>
+						<modifiers read="true" write="true" search="true" optional="false"/>
+					</attribute>
+					<attribute qualifier="templateId" type="java.lang.String">
+					<description> Template id </description>
+						<persistence type="property"/>
+					</attribute>
+					<!--Emarsys SFTP Settings-->
+					<attribute qualifier="sftpHost" type="java.lang.String">
+						<modifiers read="true" write="true" search="true" optional="false"/>
+						<description>Emarsys SFTP Host</description>
+						<persistence type="property"/>
+					</attribute>
+					<attribute qualifier="sftpUsername" type="java.lang.String">
+						<modifiers read="true" write="true" search="true" optional="false"/>
+						<description>Emarsys SFTP Username</description>
+						<persistence type="property"/>
+					</attribute>
+					<attribute qualifier="sftpPassword" type="java.lang.String">
+						<modifiers read="true" write="true" search="true" optional="false"/>
+						<description>Emarsys SFTP Password</description>
+						<persistence type="property"/>
+					</attribute>
+					<attribute qualifier="sftpPath" type="java.lang.String">
+						<description>Emarsys Predict csv file SFTP Path</description>
+						<persistence type="property"/>
+					</attribute>
+					<attribute qualifier="exportType" type="EmarsysPredictExportTypeEnum">
+						<modifiers read="true" write="true" search="true" optional="false"/>
+						<description>Emarsys Predict export type</description>
+						<defaultvalue>em().getEnumerationValue("EmarsysPredictExportTypeEnum","MAIN")</defaultvalue>
+						<persistence type="property"/>
+					</attribute>
+                </attributes>
+			</itemtype>
+			<itemtype code="EmarsysSmartInsight"
+					  jaloclass="com.osfglobal.hybris.emarsys.core.jalo.EmarsysSmartInsight"
+					  autocreate="true"
+					  generate="true"
+					  extends="GenericItem">
+				<description>Emarsys SmartInsight</description>
+				<deployment table="emarsyssmartinsight" typecode="16771" />
+				<attributes>
+					<attribute qualifier="uid" type="java.lang.String">
+						<persistence type="property"/>
+						<modifiers unique="true"/>
+					</attribute>
+					<attribute qualifier="enableSmartInsight" type="java.lang.Boolean">
+						<modifiers read="true" write="true" search="true" optional="false"/>
+						<defaultvalue>Boolean.FALSE</defaultvalue>
+						<persistence type="property"/>
+					</attribute>
+					<!--Timeframe Settings-->
+					<attribute qualifier="enableSmartInsightTimeframe" type="java.lang.Boolean">
+						<modifiers read="true" write="true" search="true" optional="false"/>
+						<defaultvalue>Boolean.FALSE</defaultvalue>
+						<persistence type="property"/>
+					</attribute>
+					<attribute qualifier="startDate" type="java.util.Date">
+						<modifiers read="true" write="true" search="true" />
+						<persistence type="property" />
+					</attribute>
+					<attribute qualifier="endDate" type="java.util.Date">
+						<modifiers read="true" write="true" search="true" />
+						<persistence type="property" />
+					</attribute>
+
+					<!--Emarsys SFTP Settings-->
+					<attribute qualifier="sftpHost" type="java.lang.String">
+						<modifiers read="true" write="true" search="true" optional="false"/>
+						<description>Emarsys SFTP Host</description>
+						<persistence type="property"/>
+					</attribute>
+					<attribute qualifier="sftpUsername" type="java.lang.String">
+						<modifiers read="true" write="true" search="true" optional="false"/>
+						<description>Emarsys SFTP Username</description>
+						<persistence type="property"/>
+					</attribute>
+					<attribute qualifier="sftpPassword" type="java.lang.String">
+						<modifiers read="true" write="true" search="true" optional="false"/>
+						<description>Emarsys SFTP Password</description>
+						<persistence type="property"/>
+					</attribute>
+					<attribute qualifier="sftpPath" type="java.lang.String">
+						<description>Emarsys SmartInsight csv file SFTP Path</description>
+						<persistence type="property"/>
+					</attribute>
+				</attributes>
+			</itemtype>
+			<itemtype code="EmarsysExternalEventsListCronJob" autocreate="true"
+					  generate="true" extends="CronJob">
+				<description>Cronjob to get external events list and save in the database</description>
+				<attributes>
+					<attribute qualifier="baseSite" type="BaseSite" >
+						<persistence type="property" />
+					</attribute>
+				</attributes>
+			</itemtype>
+
+			<itemtype code="EmarsysCronJob" abstract="true" autocreate="true" generate="true" extends="CronJob">
+				<description>Cronjob with base site attribute</description>
+				<attributes>
+					<attribute qualifier="baseSite" type="BaseSite" >
+						<persistence type="property" />
+						<modifiers optional="false" />
+					</attribute>
+				</attributes>
+			</itemtype>
+
+			<itemtype code="EmarsysPredictCronJob" autocreate="true"
+					  generate="true" extends="EmarsysCronJob">
+				<description>Cronjob to get products catalog and export to a csv file</description>
+			</itemtype>
+
+			<itemtype code="EmarsysSmartInsightCronJob" autocreate="true"
+					  generate="true" extends="EmarsysCronJob">
+				<description>Cronjob to get orders history and export to a csv file</description>
+			</itemtype>
+
+			<itemtype code="EmarsysSendShippedEmailCronJob" autocreate="true"
+					  generate="true" extends="EmarsysCronJob">
+				<description>Cronjob to send transactional email to every order that is flagged as "shipped"</description>
+			</itemtype>
+			<itemtype code="EmarsysSyncUsersCronJob" autocreate="true"
+					  generate="true" extends="CronJob">
+				<description>Cronjob to synchronize users with Emarsys</description>
+				<attributes>
+				    <attribute qualifier="baseSite" type="BaseSite" >
+						<persistence type="property" />
+					</attribute>
+                </attributes>
+			</itemtype>
+
+			<!-- Expended types-->
+
+			<itemtype code="Order" autocreate="false" generate="false">
+				<description>Extending Order type with additional attributes.</description>
+				<attributes>
+					<attribute qualifier="isSentEmail" type="java.lang.Boolean" >
+						<description>Custom field specify whether an email was sent  </description>
+						<persistence type="property" />
+					</attribute>
+				</attributes>
+			</itemtype>
+
+			<itemtype code="Customer" autocreate="false" generate="false">
+				<description>Extending Customer type with additional attributes.</description>
+				<attributes>
+					<attribute qualifier="optinAttribute" type="java.lang.Boolean" >
+						<description>Custom field to set the desired opt-in status of the synchronized recipient profiles</description>
+						<persistence type="property" />
+					</attribute>
+				</attributes>
+			</itemtype>
+			
+			<itemtype code="BaseSite" autocreate="false" generate="false">
+			<description>Extending BaseSite type with additional attributes.</description>
+				<attributes>
+					<attribute qualifier="emarsysSettings" type="EmarsysSettings" >
+						<persistence type="property" />
+					</attribute>
+					<attribute qualifier="emarsysOrderEmail" type="EmarsysOrderEmail" >
+						<persistence type="property" />
+					</attribute>
+					<attribute qualifier="emarsysShippingEmail" type="EmarsysShippingEmail" >
+						<persistence type="property" />
+					</attribute>
+					<attribute qualifier="emarsysInitialDBLoad" type="EmarsysInitialDBLoad" >
+						<persistence type="property" />
+					</attribute>
+					<attribute qualifier="emarsysPredict" type="EmarsysPredict" >
+						<persistence type="property" />
+					</attribute>
+					<attribute qualifier="emarsysSmartInsight" type="EmarsysSmartInsight" >
+						<persistence type="property" />
+					</attribute>
+					<attribute qualifier="emarsysDomainUrl" type="java.lang.String">
+						<description>Emarsys domain URL</description>
+						<persistence type="property"/>
+					</attribute>
+					<attribute qualifier="emarsysSiteUrl" type="java.lang.String">
+						<description>Emarsys site URL</description>
+						<persistence type="property"/>
+					</attribute>
+				</attributes>
+			</itemtype>
+			
+		</typegroup>
+	</itemtypes>
+</items>
